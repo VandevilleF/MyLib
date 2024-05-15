@@ -2,7 +2,7 @@
 
 import requests
 
-API_KEY = 'AIzaSyAq0COD7e_Ue2sP_h3eIofkTyj9pcjbrYE'
+API_KEY = 'YOUR_API_KEY'
 author_name = 'Guillaume Musso'
 url = f'https://www.googleapis.com/books/v1/volumes?q=inauthor:{author_name}&key={API_KEY}'
 
