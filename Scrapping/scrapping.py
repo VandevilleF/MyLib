@@ -8,7 +8,7 @@ import json
 def get_all_pages():
     """"""
     urls = []
-    page_number = 202
+    page_number = 203
     for i in range(407):
         i = f'https://www.placedeslibraires.fr/listeliv.php?rayon=Policier+%26+Thriller%7CThriller&select_tri_recherche=dateparution_decroissant&base=allbooks&codegtl1=90000000&codegtl2=90020000&page={page_number}'
         page_number += 1
@@ -62,7 +62,7 @@ def parse_books(url):
         json_data.append(dict_livres)
 
     try:
-        with open('books_file.json', 'r', encoding='utf-8') as f:
+        with open('books_file_thriller.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
     except FileNotFoundError as e:
         data = []
@@ -76,7 +76,7 @@ def parse_books(url):
 def parse_all_pages():
     """"""
     pages = get_all_pages()
-    for page in pages[:206]:
+    for page in pages[:207]:
         parse_books(url=page)
         print(f'{page}')
 
