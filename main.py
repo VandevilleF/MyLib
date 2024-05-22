@@ -2,20 +2,17 @@
 
 import kivy
 from kivy.app import App
-from kivy.uix.boxlayout import BoxLayout
-
+from kivy.uix.image import Image
 kivy.require('2.3.0')
 
 
-class GameView(BoxLayout):
-    def __init__(self):
-        super(GameView, self).__init__()
-
-
-class TestApp(App):
+class MyApp(App):
     def build(self):
-        return GameView()
+        return Image(source='logo.jpg')
 
 
 if __name__ == '__main__':
-    TestApp().run()
+    MyApp().run()
+
+
+# https://stackoverflow.com/questions/23651781/how-to-display-an-image-using-kivy
