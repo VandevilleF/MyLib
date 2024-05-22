@@ -1,0 +1,42 @@
+[
+    {
+        "Titre": "Un animal sauvage",
+        "Auteur": "Joël Dicker",
+        "Editeur": "Rosie & wolfe",
+        "Date de sortie": "27 Février 2024",
+        "ISBN": "9782889730476",
+        "Couverture": "https://images.epagine.fr/476/9782889730476_1_m.jpg"
+    },
+    {
+        "Titre": "L'affaire Alaska Sanders",
+        "Auteur": "Joël Dicker",
+        "Editeur": "Rosie & wolfe",
+        "Date de sortie": "27 Février 2024",
+        "ISBN": "9782889730490",
+        "Couverture": "https://images.epagine.fr/490/9782889730490_1_m.jpg"
+    },
+    {
+        "Titre": "D'or et de jungle",
+        "Auteur": "Jean-Christophe Rufin",
+        "Editeur": "Calmann-levy",
+        "Date de sortie": "7 Février 2024",
+        "ISBN": "9782702187548",
+        "Couverture": "https://images.epagine.fr/548/9782702187548_1_m.jpg"
+    },
+    {
+        "Titre": "Rat island",
+        "Auteur": "Jo Nesbo",
+        "Editeur": "Gallimard",
+        "Date de sortie": "4 Avril 2024",
+        "ISBN": "9782072946912",
+        "Couverture": "https://images.epagine.fr/912/9782072946912_1_m.jpg"
+    },
+    {
+        "Titre": "Holly",
+        "Auteur": "Stephen King",
+        "Editeur": "Albin michel",
+        "Date de sortie": "28 Février 2024",
+        "ISBN": "9782226481474",
+        "Couverture": "https://images.epagine.fr/474/9782226481474_1_m.jpg"
+    }
+]
