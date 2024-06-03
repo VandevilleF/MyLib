@@ -71,8 +71,12 @@ class CreateAccompte(Screen):
             cursor.execute(query, values)
             conn.commit()
             popup_success("Compte créé avec succès")
+        # clear input
+        self.ids.nom.text = ""
+        self.ids.mail.text = ""
+        self.ids.mdp.text = ""
+        self.ids.confir_mdp.text = ""
         conn.close()
-        pass
 
 
 class LoginPage(Screen):
@@ -93,12 +97,21 @@ class LoginPage(Screen):
         result = cursor.fetchone()
         if result:
             if log_pwd == result[3]:
-                print("Success")
+                popup_success("Connection réussi")
+
             else:
                 popup_error("Mot de passe incorrect")
         else:
             popup_error("Nom d'utilisateur incorrect")
+        # clear input
+        self.ids.login_user.text = ""
+        self.ids.login_pwd.text = ""
         return result[0]
+
+
+class UserLib(Screen):
+    def userhome(self):
+        pass
 
 
 class HomePage(Screen):
