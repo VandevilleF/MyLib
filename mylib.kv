@@ -74,7 +74,7 @@
 
 	BoxLayout:
 		orientation:'vertical'
-		size_hint: 0.70, 0.3
+		size_hint: 0.70, 0.35
 		pos_hint: {'center_x': 0.5,'center_y': 0.5}
 		padding: 10, 20
 		spacing: 10
@@ -84,6 +84,7 @@
 			RoundedRectangle:
 				size: self.size
 				pos: self.pos
+
 		GridLayout:
 			cols: 2
 			spacing: 5
@@ -91,28 +92,33 @@
 				text: 'Nom'
 				size_hint_x: 0.6
 			TextInput:
-				text:''
+				id: nom
 				multiline:False
 			Label:
 				text: 'Mail'
 				size_hint_x: 0.6
 			TextInput:
-				text:''
+				id: mail
 				multiline:False
 			Label:
 				text: 'Mot de passe'
 				size_hint_x: 0.6
 			TextInput:
-				text:''
+				id: mdp
 				multiline: False
 				password: True
 			Label:
 				text: 'Confirmation'
 				size_hint_x: 0.6
 			TextInput:
-				text:''
+				id: confir_mdp
 				multiline:False
 				password: True
+		Button:
+			text: "Valider"
+			size_hint: 0.6, 0.25
+			pos_hint: {'center_x': 0.5,'center_y': 0.0}
+			on_press: root.register_user()
 
 <LoginPage>:
 
@@ -145,7 +151,7 @@
 
 	BoxLayout:
 		orientation:'vertical'
-		size_hint: 0.70, 0.15
+		size_hint: 0.70, 0.23
 		pos_hint: {'center_x': 0.5,'center_y': 0.5}
 		padding: 10, 20
 		spacing: 10
@@ -162,12 +168,19 @@
 				text: 'Nom'
 				size_hint_x: 0.6
 			TextInput:
+				id: login_user
 				text:''
 				multiline:False
 			Label:
 				text: 'Mot de passe'
 				size_hint_x: 0.6
 			TextInput:
+				id: login_pwd
 				text:''
 				multiline:False
 				password: True
+		Button:
+			text: "Valider"
+			size_hint: 0.6, 0.5
+			pos_hint: {'center_x': 0.5,'center_y': 0.0}
+			on_press: root.login_user()
