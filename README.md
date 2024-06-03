@@ -17,9 +17,9 @@ Vandeville Florian - [Github](https://github.com/VandevilleF)
 
 
 ### Project progress
-Database OK
-Home page OK
-Creation of users OK
-Login users OK
+- [x] Database OK
+- [x] Home page OK
+- [x] Creation of users OK
+- [x] Login users OK
 
 Work in progress
