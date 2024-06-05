@@ -98,7 +98,7 @@ class LoginPage(Screen):
         if result:
             if log_pwd == result[3]:
                 popup_success("Connection réussi")
-
+                self.manager.current = "UserHome"
             else:
                 popup_error("Mot de passe incorrect")
         else:
@@ -109,9 +109,8 @@ class LoginPage(Screen):
         return result[0]
 
 
-class UserLib(Screen):
-    def userhome(self):
-        pass
+class UserHome(Screen):
+    pass
 
 
 class HomePage(Screen):
@@ -124,6 +123,7 @@ class MyLibApp(App):
         sm.add_widget(HomePage(name='HomePage'))
         sm.add_widget(CreateAccompte(name='CreateAccompte'))
         sm.add_widget(LoginPage(name='LoginPage'))
+        sm.add_widget(UserHome(name='UserHome'))
         return sm
 
 

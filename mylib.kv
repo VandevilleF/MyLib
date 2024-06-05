@@ -185,6 +185,30 @@
 			pos_hint: {'center_x': 0.5,'center_y': 0.0}
 			on_press: root.login_user()
 
-<UserLib>:
+<UserHome>:
+	FloatLayout:
+		Image:
+			source: 'images/logo.jpg'
+			allow_stretch: True
+			keep_ratio: False
+			size_hint: 1, 1
+		BoxLayout:
+			size_hint: 0.15, 0.08
+			Button:
+				background_normal: 'images/retour.png'
+				on_press: root.manager.current = 'HomePage'
+
 	BoxLayout:
-		orientation:'vertical'
+		orientation:'horizontal'
+		size_hint: 1, 0.08
+		pos_hint: {'center_x': 0.5,'center_y': 0.96}
+		canvas.before:
+			Color:
+				rgba: 255, 255, 255, 0.2
+			Rectangle:
+				size: self.size
+				pos: self.pos
+		Label:
+			text: 'MyLib'
+			font_size: 18
+			color: 'black'
