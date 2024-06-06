@@ -4,6 +4,8 @@ import kivy
 from kivy.app import App
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
+from kivy.uix.image import AsyncImage
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.core.window import Window
 from mysql import connector
@@ -76,6 +78,7 @@ class CreateAccompte(Screen):
         self.ids.mail.text = ""
         self.ids.mdp.text = ""
         self.ids.confir_mdp.text = ""
+        cursor.close()
         conn.close()
 
 
@@ -96,21 +99,69 @@ class LoginPage(Screen):
         cursor.execute(query, value)
         result = cursor.fetchone()
         if result:
+            self.user_id = result[0]
             if log_pwd == result[3]:
-                popup_success("Connection réussi")
+                popup_success("Connection réussie")
                 self.manager.current = "UserHome"
             else:
                 popup_error("Mot de passe incorrect")
+                self.user_id = None
         else:
             popup_error("Nom d'utilisateur incorrect")
+            self.user_id = None
         # clear input
         self.ids.login_user.text = ""
         self.ids.login_pwd.text = ""
-        return result[0]
+        conn.close()
+
+        return self.user_id
 
 
 class UserHome(Screen):
     pass
+
+
+class UserLib(Screen):
+    def on_pre_enter(self):
+        self.login_page = self.manager.get_screen("LoginPage")
+        self.userlib()
+
+    def userlib(self):
+
+        user_id = self.login_page.user_id
+        if not user_id:
+            popup_error("L'utilisateur n'est pas connecté")
+
+        conn = connector.connect(
+            host='localhost',
+            user='user02',
+            password='user02pwd',
+            database='MyLib'
+        )
+
+        cursor = conn.cursor()
+        query = ("SELECT couverture, title, author FROM Users LEFT JOIN User_books\
+                 ON ID = user_ID LEFT JOIN Books ON ISBN = book_ID WHERE ID = %s")
+        value = (user_id,)
+        cursor.execute(query, value)
+        result = cursor.fetchall()
+        container = self.ids.container
+        container.clear_widgets()
+
+        for book in result:
+            box_lay = BoxLayout(orientation='vertical', size_hint_y=None, spacing=10)
+            image = AsyncImage(source=book[0], size_hint=(1, None), height=50)
+            lab_info = Label(text=f"{book[1]}\n{book[2]}",
+                             text_size=(container.width, None), font_size=14,
+                             halign='center', valign='middle')
+
+            box_lay.add_widget(image)
+            box_lay.add_widget(lab_info)
+            container.add_widget(box_lay)
+        conn.close()
+
+        self.ids.n_element.text = f"Nombre de livres {len(result)}"
+        pass
 
 
 class HomePage(Screen):
@@ -124,6 +175,7 @@ class MyLibApp(App):
         sm.add_widget(CreateAccompte(name='CreateAccompte'))
         sm.add_widget(LoginPage(name='LoginPage'))
         sm.add_widget(UserHome(name='UserHome'))
+        sm.add_widget(UserLib(name='UserLib'))
         return sm
 
 
