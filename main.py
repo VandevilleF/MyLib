@@ -6,6 +6,9 @@ from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.uix.image import AsyncImage
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.button import Button
+from kivy.uix.scrollview import ScrollView
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.core.window import Window
 from mysql import connector
@@ -164,6 +167,83 @@ class UserLib(Screen):
         pass
 
 
+class AddBookHome(Screen):
+    pass
+
+
+class AddByName(Screen):
+    def search_book(self):
+        book_name = self.ids.book_name.text
+        author_name = self.ids.author_name.text
+
+        if not book_name and not author_name:
+            popup_error("Un champ de recherche obligatoire")
+            return
+
+        if book_name and author_name:
+            popup_error("Un seul champ de recherche")
+            return
+
+        conn = connector.connect(
+            host='localhost',
+            user='user02',
+            password='user02pwd',
+            database='MyLib'
+        )
+        cursor = conn.cursor()
+
+        if book_name:
+            query = "SELECT * FROM Books WHERE title LIKE %s"
+            value = ('%' + book_name + '%',)
+            cursor.execute(query, value)
+            result = cursor.fetchall()
+
+            if not result:
+                popup_error("Aucun titre trouvé")
+
+        if author_name:
+            query = "SELECT * FROM Books WHERE author LIKE %s"
+            value = ('%' + author_name + '%',)
+            cursor.execute(query, value)
+            result = cursor.fetchall()
+
+            if not result:
+                popup_error("Aucun auteur trouvé")
+
+        cursor.close()
+        conn.close()
+        self.display_result(result)
+
+    def display_result(self, result):
+        scroll = ScrollView(size_hint=(1, 1))
+        grid_lay = GridLayout(size_hint_y=None, cols=1)
+        grid_lay.bind(minimum_height=grid_lay.setter('height'))
+
+        for book in result:
+            box_lay = BoxLayout(orientation='horizontal', size_hint_y=None, height=100)
+            image = AsyncImage(source=book[5], size_hint=(0.2, 1), height=100)
+            lab_info = Label(text=f"{book[1]}\n{book[2]}\n{book[3]} / {book[4]}",
+                             text_size=(None, None), font_size=14,
+                             halign='center', valign='middle')
+            add_book = Button(size_hint=(0.1, 0.2),
+                              pos_hint={'center_x': 0.5, 'center_y': 0.5})
+            box_lay.add_widget(image)
+            box_lay.add_widget(lab_info)
+            box_lay.add_widget(add_book)
+            grid_lay.add_widget(box_lay)
+
+        scroll.add_widget(grid_lay)
+
+        popup = Popup(title='Résultat de la recherche', content=scroll,
+                      size_hint=(0.8, 0.8))
+        popup.open()
+        pass
+
+
+class AddByBarcode(Screen):
+    pass
+
+
 class HomePage(Screen):
     pass
 
@@ -176,6 +256,9 @@ class MyLibApp(App):
         sm.add_widget(LoginPage(name='LoginPage'))
         sm.add_widget(UserHome(name='UserHome'))
         sm.add_widget(UserLib(name='UserLib'))
+        sm.add_widget(AddBookHome(name='AddBookHome'))
+        sm.add_widget(AddByName(name='AddByName'))
+        sm.add_widget(AddByBarcode(name='AddByBarcode'))
         return sm
 
 
