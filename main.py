@@ -102,22 +102,20 @@ class LoginPage(Screen):
         cursor.execute(query, value)
         result = cursor.fetchone()
         if result:
-            self.user_id = result[0]
             if log_pwd == result[3]:
                 popup_success("Connection réussie")
+                App.get_running_app().user_id = result[0]
                 self.manager.current = "UserHome"
             else:
                 popup_error("Mot de passe incorrect")
-                self.user_id = None
+                App.get_running_app().user_id = None
         else:
             popup_error("Nom d'utilisateur incorrect")
-            self.user_id = None
+            App.get_running_app().user_id = None
         # clear input
         self.ids.login_user.text = ""
         self.ids.login_pwd.text = ""
         conn.close()
-
-        return self.user_id
 
 
 class UserHome(Screen):
@@ -126,12 +124,12 @@ class UserHome(Screen):
 
 class UserLib(Screen):
     def on_pre_enter(self):
-        self.login_page = self.manager.get_screen("LoginPage")
         self.userlib()
 
     def userlib(self):
 
-        user_id = self.login_page.user_id
+        user_id = App.get_running_app().user_id
+        print("user_id dans la fonction userlib", user_id)
         if not user_id:
             popup_error("L'utilisateur n'est pas connecté")
 
@@ -225,11 +223,15 @@ class AddByName(Screen):
             lab_info = Label(text=f"{book[1]}\n{book[2]}\n{book[3]} / {book[4]}",
                              text_size=(None, None), font_size=14,
                              halign='center', valign='middle')
-            add_book = Button(size_hint=(0.1, 0.2),
-                              pos_hint={'center_x': 0.5, 'center_y': 0.5})
+            add_button = Button(size_hint=(0.1, 0.2),
+                                pos_hint={'center_x': 0.5, 'center_y': 0.5})
+            # Expression lambda, une fonction anonyme,
+            # utilisée par besoin d'une fonction temporaire et simple
+            add_button.bind(on_press=lambda instance,
+                            book_info=book: self.add_book(instance, book_info))
             box_lay.add_widget(image)
             box_lay.add_widget(lab_info)
-            box_lay.add_widget(add_book)
+            box_lay.add_widget(add_button)
             grid_lay.add_widget(box_lay)
 
         scroll.add_widget(grid_lay)
@@ -237,7 +239,35 @@ class AddByName(Screen):
         popup = Popup(title='Résultat de la recherche', content=scroll,
                       size_hint=(0.8, 0.8))
         popup.open()
-        pass
+
+    def add_book(self, instance, book_info):
+        user_id = App.get_running_app().user_id
+        print("user_id dans la fonction add_book", user_id)
+        conn = connector.connect(
+            host='localhost',
+            user='user02',
+            password='user02pwd',
+            database='MyLib'
+            )
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM User_books WHERE user_ID = %s", (user_id,))
+        result = cursor.fetchall()
+        print("après la recherche")
+        for book in result:
+            if book_info[0] == book[1]:
+                popup_error("Livre déjà enregistré")
+                return
+
+        print("Avant ajout")
+        query = ("INSERT INTO User_books (user_ID, book_ID, status_ID)\
+                VALUES (%s, %s, 2);")
+        value = (user_id, book_info[0])
+        cursor.execute(query, value)
+        popup_success("Ajout réussi")
+        print("après l'ajout")
+        conn.commit()
+        cursor.close()
+        conn.close()
 
 
 class AddByBarcode(Screen):
@@ -249,6 +279,8 @@ class HomePage(Screen):
 
 
 class MyLibApp(App):
+    user_id = None
+    print("user_id dans la classe mylibapp", user_id)
     def build(self):
         sm = ScreenManager()
         sm.add_widget(HomePage(name='HomePage'))
