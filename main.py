@@ -12,6 +12,8 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.core.window import Window
 from mysql import connector
+from pyzbar.pyzbar import decode
+from PIL import Image
 
 Window.size = (360, 640)
 
@@ -129,7 +131,6 @@ class UserLib(Screen):
     def userlib(self):
 
         user_id = App.get_running_app().user_id
-        print("user_id dans la fonction userlib", user_id)
         if not user_id:
             popup_error("L'utilisateur n'est pas connecté")
 
@@ -169,6 +170,35 @@ class AddBookHome(Screen):
     pass
 
 
+class AddBook:
+    @staticmethod
+    def add_book(user_id, book_info):
+        conn = connector.connect(
+            host='localhost',
+            user='user02',
+            password='user02pwd',
+            database='MyLib'
+            )
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM User_books WHERE user_ID = %s", (user_id,))
+        result = cursor.fetchall()
+
+        for book in result:
+            if book_info[0] == book[1]:
+                popup_error("Livre déjà enregistré")
+                return
+
+        query = ("INSERT INTO User_books (user_ID, book_ID, status_ID)\
+                VALUES (%s, %s, 2);")
+        value = (user_id, book_info[0])
+        cursor.execute(query, value)
+        popup_success("Ajout réussi")
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+
 class AddByName(Screen):
     def search_book(self):
         book_name = self.ids.book_name.text
@@ -198,6 +228,7 @@ class AddByName(Screen):
 
             if not result:
                 popup_error("Aucun titre trouvé")
+                return
 
         if author_name:
             query = "SELECT * FROM Books WHERE author LIKE %s"
@@ -207,12 +238,16 @@ class AddByName(Screen):
 
             if not result:
                 popup_error("Aucun auteur trouvé")
+                return
 
         cursor.close()
         conn.close()
         self.display_result(result)
 
     def display_result(self, result):
+        boxpopup = BoxLayout(orientation='vertical')
+        button = Button(text="Fermer", size_hint=(0.8, 0.05),
+                        pos_hint={'center_x': 0.5, 'center_y': 0.5})
         scroll = ScrollView(size_hint=(1, 1))
         grid_lay = GridLayout(size_hint_y=None, cols=1)
         grid_lay.bind(minimum_height=grid_lay.setter('height'))
@@ -228,21 +263,32 @@ class AddByName(Screen):
             # Expression lambda, une fonction anonyme,
             # utilisée par besoin d'une fonction temporaire et simple
             add_button.bind(on_press=lambda instance,
-                            book_info=book: self.add_book(instance, book_info))
+                            book_info=book: AddBook.add_book(App.get_running_app().user_id, book_info))
             box_lay.add_widget(image)
             box_lay.add_widget(lab_info)
             box_lay.add_widget(add_button)
             grid_lay.add_widget(box_lay)
 
         scroll.add_widget(grid_lay)
+        boxpopup.add_widget(scroll)
+        boxpopup.add_widget(button)
 
-        popup = Popup(title='Résultat de la recherche', content=scroll,
-                      size_hint=(0.8, 0.8))
+        popup = Popup(title='Résultat de la recherche', content=boxpopup,
+                      size_hint=(0.8, 0.8), auto_dismiss=False)
+        button.bind(on_press=popup.dismiss)
         popup.open()
 
-    def add_book(self, instance, book_info):
-        user_id = App.get_running_app().user_id
-        print("user_id dans la fonction add_book", user_id)
+
+class AddByBarcode(Screen):
+    def search_book_by_isbn(self):
+        text_isbn = self.ids.isbn_book.text
+
+        if text_isbn:
+            self.search_isbn(text_isbn)
+        else:
+            self.scan_isbn()
+
+    def search_isbn(self, text_isbn):
         conn = connector.connect(
             host='localhost',
             user='user02',
@@ -250,28 +296,55 @@ class AddByName(Screen):
             database='MyLib'
             )
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM User_books WHERE user_ID = %s", (user_id,))
-        result = cursor.fetchall()
-        print("après la recherche")
-        for book in result:
-            if book_info[0] == book[1]:
-                popup_error("Livre déjà enregistré")
-                return
+        cursor.execute("SELECT * FROM Books WHERE ISBN = %s", (text_isbn,))
+        result = cursor.fetchone()
+        if not result:
+            popup_error("Livre non trouvé")
 
-        print("Avant ajout")
-        query = ("INSERT INTO User_books (user_ID, book_ID, status_ID)\
-                VALUES (%s, %s, 2);")
-        value = (user_id, book_info[0])
-        cursor.execute(query, value)
-        popup_success("Ajout réussi")
-        print("après l'ajout")
-        conn.commit()
-        cursor.close()
-        conn.close()
+        self.display_book(result)
 
+    def scan_isbn(self):
+        self.ids.camera.export_to_png("isbn.png")
+        image = Image.open("isbn.png")
 
-class AddByBarcode(Screen):
-    pass
+        decoded_objects = decode(image)
+
+        for obj in decoded_objects:
+            if obj.type != 'EAN13':
+                popup_error("Mauvais code barre")
+            isbn = obj.data.decode('utf-8')
+            print("ISBN Scanné :", isbn)
+
+        self.search_isbn(isbn)
+
+    def display_book(self, result):
+        boxpopup = BoxLayout(orientation='vertical')
+        button = Button(text="Fermer", size_hint=(0.8, 0.05),
+                        pos_hint={'center_x': 0.5, 'center_y': 0.5})
+
+        box_lay = BoxLayout(orientation='horizontal', size_hint_y=None, height=100)
+        image = AsyncImage(source=result[5], size_hint=(0.2, 1), height=100)
+        lab_info = Label(text=f"{result[1]}\n{result[2]}\n{result[3]} / {result[4]}",
+                         text_size=(None, None), font_size=14,
+                         halign='center', valign='middle')
+        add_button = Button(size_hint=(0.1, 0.2),
+                            pos_hint={'center_x': 0.5, 'center_y': 0.5})
+        # Expression lambda, une fonction anonyme,
+        # utilisée par besoin d'une fonction temporaire et simple
+        add_button.bind(on_press=lambda instance,
+                        book_info=result: AddBook.add_book(App.get_running_app().user_id, book_info))
+
+        box_lay.add_widget(image)
+        box_lay.add_widget(lab_info)
+        box_lay.add_widget(add_button)
+
+        boxpopup.add_widget(box_lay)
+        boxpopup.add_widget(button)
+
+        popup = Popup(title='Résultat de la recherche', content=boxpopup,
+                      size_hint=(0.8, 0.3), auto_dismiss=False)
+        button.bind(on_press=popup.dismiss)
+        popup.open()
 
 
 class HomePage(Screen):
@@ -280,7 +353,7 @@ class HomePage(Screen):
 
 class MyLibApp(App):
     user_id = None
-    print("user_id dans la classe mylibapp", user_id)
+
     def build(self):
         sm = ScreenManager()
         sm.add_widget(HomePage(name='HomePage'))
