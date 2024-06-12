@@ -12,6 +12,7 @@ from screen.user_lib import UserLib
 from screen.add_book_home import AddBookHome
 from screen.add_by_name import AddByName
 from screen.add_by_barcode import AddByBarcode
+from utils import get_user_id_jwt, conn_to_ddb
 
 
 Builder.load_file("screen/HomePage.kv")
@@ -29,9 +30,8 @@ kivy.require('2.3.0')
 
 
 class MyLibApp(App):
-    user_id = None
-
     def build(self):
+        self.jwt_token = None
         sm = ScreenManager()
         sm.add_widget(HomePage(name='HomePage'))
         sm.add_widget(CreateAccount(name='CreateAccompte'))
@@ -41,7 +41,30 @@ class MyLibApp(App):
         sm.add_widget(AddBookHome(name='AddBookHome'))
         sm.add_widget(AddByName(name='AddByName'))
         sm.add_widget(AddByBarcode(name='AddByBarcode'))
+
+        # Check is a user is logged
+        self.check_logged_user(sm)
         return sm
+
+    def check_logged_user(self, sm):
+        """Check if a user is logged to the application"""
+        conn = conn_to_ddb()
+        cursor = conn.cursor()
+
+        query = "SELECT jwt_token FROM Users WHERE jwt_token IS NOT NULL"
+        cursor.execute(query)
+        result = cursor.fetchone()
+
+        if result and result[0]:
+            self.jwt_token = result[0]
+            print(f"jwt loaded: {self.jwt_token}")
+            sm.current = 'UserHome'
+        else:
+            print("pas de jwt valide")
+            sm.current = 'HomePage'
+
+        cursor.close()
+        conn.close()
 
 
 if __name__ == '__main__':
