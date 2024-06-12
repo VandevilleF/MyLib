@@ -1,0 +1,44 @@
+<HomePage>:
+
+	FloatLayout:
+		Image:
+			source: 'images/logo.jpg'
+			allow_stretch: True
+			keep_ratio: False
+			size_hint: 1, 1
+
+	BoxLayout:
+		orientation:'horizontal'
+		size_hint: 1, 0.08
+		pos_hint: {'center_x': 0.5,'center_y': 0.96}
+		canvas.before:
+			Color:
+				rgba: 255, 255, 255, 0.4
+			Rectangle:
+				size: self.size
+				pos: self.pos
+		Label:
+			text: 'MyLib'
+			font_size: 18
+			color: 'black'
+
+	BoxLayout:
+		orientation:'vertical'
+		size_hint: 0.40, 0.2
+		pos_hint: {'center_x': 0.5,'center_y': 0.5}
+		padding: 10, 20
+		spacing: 20
+		canvas.before:
+			Color:
+				rgba: 255, 255, 255, 0.2
+			RoundedRectangle:
+				size: self.size
+				pos: self.pos
+		Button:
+			text: 'Connexion'
+			size_hint: 1, 0.6
+			on_press: root.manager.current = 'LoginPage'
+		Button:
+			text: 'Créer un compte'
+			size_hint: 1, 0.6
+			on_press: root.manager.current = 'CreateAccompte'
