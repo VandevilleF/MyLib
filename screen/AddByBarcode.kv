@@ -1,0 +1,61 @@
+<AddByBarcode>:
+	FloatLayout:
+		Image:
+			source: 'images/logo.jpg'
+			allow_stretch: True
+			keep_ratio: False
+			size_hint: 1, 1
+		BoxLayout:
+			size_hint: 0.15, 0.08
+			Button:
+				background_normal: 'images/retour.png'
+				on_press: root.manager.current = 'AddBookHome'
+
+	BoxLayout:
+		orientation:'horizontal'
+		size_hint: 1, 0.08
+		pos_hint: {'center_x': 0.5,'center_y': 0.96}
+		canvas.before:
+			Color:
+				rgba: 255, 255, 255, 0.2
+			Rectangle:
+				size: self.size
+				pos: self.pos
+		Label:
+			text: 'MyLib'
+			font_size: 18
+			color: 'black'
+
+	BoxLayout:
+		orientation:'vertical'
+		size_hint: 0.70, 0.50
+		pos_hint: {'center_x': 0.5,'center_y': 0.5}
+		padding: 10, 20
+		spacing: 10
+		canvas.before:
+			Color:
+				rgba: 255, 255, 255, 0.4
+			RoundedRectangle:
+				size: self.size
+				pos: self.pos
+		GridLayout:
+			cols: 1
+			spacing: 5
+			TextInput:
+				id: isbn_book
+				text:'Code ISBN'
+				multiline:False
+			Label:
+				text: 'Scanne'
+				size_hint_x: 0.6
+			Button:
+				text: "Attente caméra"
+			# Camera:
+			# 	id: camera
+			# 	resolution: (320, 240)
+			# 	play: True
+		Button:
+			text: "Recherche"
+			size_hint: 0.6, 0.2
+			pos_hint: {'center_x': 0.5,'center_y': 0.0}
+			on_press: root.search_book_by_isbn()

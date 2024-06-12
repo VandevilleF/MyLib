@@ -1,0 +1,46 @@
+<UserLib>:
+	FloatLayout:
+		Image:
+			source: 'images/logo.jpg'
+			allow_stretch: True
+			keep_ratio: False
+			size_hint: 1, 1
+		BoxLayout:
+			size_hint: 1, 0.08
+			Button:
+				size_hint_x: 0.2
+				background_normal: 'images/retour.png'
+				on_press: root.manager.current = 'UserHome'
+			Label:
+				id: n_element
+				text: ""
+				text_size: self.size
+				valign: 'middle'
+				halign: 'right'
+				padding: 0, 0, 5, 0
+	BoxLayout:
+		orientation:'horizontal'
+		size_hint: 1, 0.08
+		pos_hint: {'center_x': 0.5,'center_y': 0.96}
+		canvas.before:
+			Color:
+				rgba: 255, 255, 255, 0.2
+			Rectangle:
+				size: self.size
+				pos: self.pos
+		Label:
+			text: 'MyLib'
+			font_size: 18
+			color: 'black'
+	ScrollView:
+		do_scroll_x: False
+		do_scroll_y: True
+		pos_hint: {'center_x': 0.5,'center_y': 0.5}
+		size_hint_y: 0.84
+		GridLayout:
+			id: container
+			cols: 3
+			size_hint_y: None
+			height: self.minimum_height
+			spacing: 10
+			padding: 5, 5

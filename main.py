@@ -1,117 +1,70 @@
 #!/usr/bin/python3
-import hashlib
 import kivy
 from kivy.app import App
-from kivy.uix.popup import Popup
-from kivy.uix.label import Label
-from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.screenmanager import ScreenManager
 from kivy.core.window import Window
-from mysql import connector
+from kivy.lang import Builder
+from screen.home_page import HomePage
+from screen.create_account import CreateAccount
+from screen.login_page import LoginPage
+from screen.user_home import UserHome
+from screen.user_lib import UserLib
+from screen.add_book_home import AddBookHome
+from screen.add_by_name import AddByName
+from screen.add_by_barcode import AddByBarcode
+from utils import get_user_id_jwt, conn_to_ddb
+
+
+Builder.load_file("screen/HomePage.kv")
+Builder.load_file("screen/CreateAccount.kv")
+Builder.load_file("screen/LoginPage.kv")
+Builder.load_file("screen/UserHome.kv")
+Builder.load_file("screen/UserLib.kv")
+Builder.load_file("screen/AddBookHome.kv")
+Builder.load_file("screen/AddByName.kv")
+Builder.load_file("screen/AddByBarcode.kv")
 
 Window.size = (360, 640)
 
 kivy.require('2.3.0')
 
 
-def popup_success(message):
-    popup = Popup(title='Succès', content=Label(text=message),
-                  size_hint=(None, None), size=(350, 100))
-    popup.open()
-
-
-def popup_error(message):
-    popup = Popup(title='Erreur', content=Label(text=message),
-                  size_hint=(None, None), size=(350, 100))
-    popup.open()
-
-
-def hash_pwd(password):
-    hash_obj = hashlib.sha256()
-    hash_obj.update(password.encode())
-    return hash_obj.hexdigest()
-
-
-class CreateAccompte(Screen):
-    def register_user(self):
-        username = self.ids.nom.text
-        mail = self.ids.mail.text
-        password = hash_pwd(self.ids.mdp.text)
-        confirm = hash_pwd(self.ids.confir_mdp.text)
-
-        if not username or not mail or not password or not confirm:
-            popup_error("Tous les champs doivent être remplis")
-            return
-
-        if password != confirm:
-            popup_error("La confirmation est différente du mot de passe")
-            return
-
-        conn = connector.connect(
-            host='localhost',
-            user='user02',
-            password='user02pwd',
-            database='MyLib'
-        )
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM Users WHERE username = %s", (username,))
-        username_result = cursor.fetchone()
-        if username_result:
-            popup_error("Nom déjà utilisé")
-            return
-
-        cursor.execute("SELECT * FROM Users WHERE mail = %s", (mail,))
-        mail_result = cursor.fetchone()
-        if mail_result:
-            popup_error("Mail déjà utilisé")
-            return
-
-        else:
-            query = "INSERT INTO Users (username, mail, password) VALUES (%s, %s, %s)"
-            values = (username, mail, password)
-            cursor.execute(query, values)
-            conn.commit()
-            popup_success("Compte créé avec succès")
-        conn.close()
-        pass
-
-
-class LoginPage(Screen):
-    def login_user(self):
-        log_user = self.ids.login_user.text
-        log_pwd = hash_pwd(self.ids.login_pwd.text)
-
-        conn = connector.connect(
-            host='localhost',
-            user='user02',
-            password='user02pwd',
-            database='MyLib'
-        )
-        cursor = conn.cursor()
-        query = "SELECT * FROM Users WHERE username = %s"
-        value = (log_user,)
-        cursor.execute(query, value)
-        result = cursor.fetchone()
-        if result:
-            if log_pwd == result[3]:
-                print("Success")
-            else:
-                popup_error("Mot de passe incorrect")
-        else:
-            popup_error("Nom d'utilisateur incorrect")
-        return result[0]
-
-
-class HomePage(Screen):
-    pass
-
-
 class MyLibApp(App):
     def build(self):
+        self.jwt_token = None
         sm = ScreenManager()
         sm.add_widget(HomePage(name='HomePage'))
-        sm.add_widget(CreateAccompte(name='CreateAccompte'))
+        sm.add_widget(CreateAccount(name='CreateAccompte'))
         sm.add_widget(LoginPage(name='LoginPage'))
+        sm.add_widget(UserHome(name='UserHome'))
+        sm.add_widget(UserLib(name='UserLib'))
+        sm.add_widget(AddBookHome(name='AddBookHome'))
+        sm.add_widget(AddByName(name='AddByName'))
+        sm.add_widget(AddByBarcode(name='AddByBarcode'))
+
+        # Check is a user is logged
+        self.check_logged_user(sm)
         return sm
+
+    def check_logged_user(self, sm):
+        """Check if a user is logged to the application"""
+        conn = conn_to_ddb()
+        cursor = conn.cursor()
+
+        query = "SELECT jwt_token FROM Users WHERE jwt_token IS NOT NULL"
+        cursor.execute(query)
+        result = cursor.fetchone()
+
+        if result and result[0]:
+            self.jwt_token = result[0]
+            print(f"jwt loaded: {self.jwt_token}")
+            sm.current = 'UserHome'
+        else:
+            print("pas de jwt valide")
+            sm.current = 'HomePage'
+
+        cursor.close()
+        conn.close()
 
 
 if __name__ == '__main__':

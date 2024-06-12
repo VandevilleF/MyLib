@@ -1,0 +1,64 @@
+<LoginPage>:
+
+	FloatLayout:
+		Image:
+			source: 'images/logo.jpg'
+			allow_stretch: True
+			keep_ratio: False
+			size_hint: 1, 1
+		BoxLayout:
+			size_hint: 0.15, 0.08
+			Button:
+				background_normal: 'images/retour.png'
+				on_press: root.manager.current = 'HomePage'
+
+	BoxLayout:
+		orientation:'horizontal'
+		size_hint: 1, 0.08
+		pos_hint: {'center_x': 0.5,'center_y': 0.96}
+		canvas.before:
+			Color:
+				rgba: 255, 255, 255, 0.2
+			Rectangle:
+				size: self.size
+				pos: self.pos
+		Label:
+			text: 'MyLib'
+			font_size: 18
+			color: 'black'
+
+	BoxLayout:
+		orientation:'vertical'
+		size_hint: 0.70, 0.23
+		pos_hint: {'center_x': 0.5,'center_y': 0.5}
+		padding: 10, 20
+		spacing: 10
+		canvas.before:
+			Color:
+				rgba: 255, 255, 255, 0.4
+			RoundedRectangle:
+				size: self.size
+				pos: self.pos
+		GridLayout:
+			cols: 2
+			spacing: 5
+			Label:
+				text: 'Nom'
+				size_hint_x: 0.6
+			TextInput:
+				id: login_user
+				text:''
+				multiline:False
+			Label:
+				text: 'Mot de passe'
+				size_hint_x: 0.6
+			TextInput:
+				id: login_pwd
+				text:''
+				multiline:False
+				password: True
+		Button:
+			text: "Valider"
+			size_hint: 0.6, 0.5
+			pos_hint: {'center_x': 0.5,'center_y': 0.0}
+			on_press: root.login_user()
