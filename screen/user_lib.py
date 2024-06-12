@@ -4,8 +4,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import AsyncImage
 from kivy.uix.label import Label
 from kivy.app import App
-from mysql import connector
-from utils import popup_error
+from utils import popup_error, conn_to_ddb, get_user_id_jwt
 
 
 class UserLib(Screen):
@@ -17,17 +16,12 @@ class UserLib(Screen):
     def userlib(self):
         """Display the user's books in their library"""
         # Retrieve the user ID from the current running instance of the application
-        user_id = App.get_running_app().user_id
+        user_id = get_user_id_jwt()
 
         if not user_id:
             popup_error("L'utilisateur n'est pas connecté")
 
-        conn = connector.connect(
-            host='localhost',
-            user='user02',
-            password='user02pwd',
-            database='MyLib'
-        )
+        conn = conn_to_ddb()
         cursor = conn.cursor()
 
         # Fetch the user's books from the DDB

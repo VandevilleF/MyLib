@@ -1,6 +1,5 @@
 #!/usr/bin/python3
-from mysql import connector
-from utils import popup_error, popup_success
+from utils import popup_error, popup_success, conn_to_ddb
 
 
 class AddBook:
@@ -8,12 +7,7 @@ class AddBook:
     @staticmethod
     def add_book(user_id, book_info):
         """Add a book to the user's library if it's not already present"""
-        conn = connector.connect(
-            host='localhost',
-            user='user02',
-            password='user02pwd',
-            database='MyLib'
-            )
+        conn = conn_to_ddb()
         cursor = conn.cursor()
 
         # Check if the book is already in the user's library

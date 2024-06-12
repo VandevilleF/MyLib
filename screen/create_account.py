@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 from kivy.uix.screenmanager import Screen
-from mysql import connector
-from utils import popup_error, popup_success, hash_pwd
+from utils import popup_error, popup_success, hash_pwd, conn_to_ddb
 
 
 class CreateAccount(Screen):
@@ -21,12 +20,7 @@ class CreateAccount(Screen):
             popup_error("La confirmation est différente du mot de passe")
             return
 
-        conn = connector.connect(
-            host='localhost',
-            user='user02',
-            password='user02pwd',
-            database='MyLib'
-        )
+        conn = conn_to_ddb()
         cursor = conn.cursor()
 
         # Check if the username is already in use
@@ -50,6 +44,7 @@ class CreateAccount(Screen):
             cursor.execute(query, values)
             conn.commit()
             popup_success("Compte créé avec succès")
+            self.manager.current = 'LoginPage'
 
         # clear input fields
         self.ids.nom.text = ""

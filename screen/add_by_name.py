@@ -8,8 +8,7 @@ from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.uix.image import AsyncImage
 from kivy.app import App
-from mysql import connector
-from utils import popup_error
+from utils import popup_error, conn_to_ddb, get_user_id_jwt
 from book_manager import AddBook
 
 
@@ -31,12 +30,7 @@ class AddByName(Screen):
             popup_error("Un seul champ de recherche")
             return
 
-        conn = connector.connect(
-            host='localhost',
-            user='user02',
-            password='user02pwd',
-            database='MyLib'
-        )
+        conn = conn_to_ddb()
         cursor = conn.cursor()
 
         # Search by name
@@ -89,7 +83,7 @@ class AddByName(Screen):
             # Lambda expression, an anonymous function,
             # used here for a temporary and simple function
             add_button.bind(on_press=lambda instance,
-                            book_info=book: AddBook.add_book(App.get_running_app().user_id, book_info))
+                            book_info=book: AddBook.add_book(get_user_id_jwt(), book_info))
 
             # Add book info to the grid layout
             box_lay.add_widget(image)
