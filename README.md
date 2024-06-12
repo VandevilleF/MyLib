@@ -8,6 +8,7 @@ This is the repository for my portfolio project "MyLib", a take-it-anywhere libr
 ### Backend:
 * Python
 * MySQL
+* [JWT (Json Web Tokens)](https://jwt.io/introduction)
 * [pyzbar](https://pypi.org/project/pyzbar/)
 ```bash
 pip install pyzbar
