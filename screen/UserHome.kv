@@ -10,6 +10,12 @@
 			Button:
 				background_normal: 'images/retour.png'
 				on_press: root.manager.current = 'LoginPage'
+		BoxLayout:
+			size_hint: 0.28, 0.05
+			pos_hint: {'right': 1,'y': 0}
+			Button:
+				text: "Déconnexion"
+				on_press: root.logout_user()
 
 	BoxLayout:
 		orientation:'horizontal'
