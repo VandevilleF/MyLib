@@ -12,7 +12,8 @@ from screen.user_lib import UserLib
 from screen.add_book_home import AddBookHome
 from screen.add_by_name import AddByName
 from screen.add_by_barcode import AddByBarcode
-from utils import get_user_id_jwt, conn_to_ddb
+from screen.book import Book
+from utils import conn_to_ddb
 
 
 Builder.load_file("screen/HomePage.kv")
@@ -23,6 +24,7 @@ Builder.load_file("screen/UserLib.kv")
 Builder.load_file("screen/AddBookHome.kv")
 Builder.load_file("screen/AddByName.kv")
 Builder.load_file("screen/AddByBarcode.kv")
+Builder.load_file("screen/Book.kv")
 
 Window.size = (360, 640)
 
@@ -41,6 +43,7 @@ class MyLibApp(App):
         sm.add_widget(AddBookHome(name='AddBookHome'))
         sm.add_widget(AddByName(name='AddByName'))
         sm.add_widget(AddByBarcode(name='AddByBarcode'))
+        sm.add_widget(Book(name='Book'))
 
         # Check is a user is logged
         self.check_logged_user(sm)
@@ -57,7 +60,6 @@ class MyLibApp(App):
 
         if result and result[0]:
             self.jwt_token = result[0]
-            print(f"jwt loaded: {self.jwt_token}")
             sm.current = 'UserHome'
         else:
             print("pas de jwt valide")
