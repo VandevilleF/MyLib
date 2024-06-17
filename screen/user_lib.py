@@ -4,6 +4,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import AsyncImage
 from kivy.uix.label import Label
 from kivy.uix.button import Button
+from screen.book import Book
 from utils import popup_error, conn_to_ddb, get_user_id_jwt
 
 
@@ -25,7 +26,7 @@ class UserLib(Screen):
         cursor = conn.cursor()
 
         # Fetch the user's books from the DDB
-        query = ("SELECT couverture, title, author FROM Users LEFT JOIN User_books\
+        query = ("SELECT couverture, title, author, ISBN FROM Users LEFT JOIN User_books\
                  ON ID = user_ID LEFT JOIN Books ON ISBN = book_ID WHERE ID = %s")
         value = (user_id,)
         cursor.execute(query, value)
@@ -57,7 +58,9 @@ class UserLib(Screen):
             box_lay.add_widget(lab_title)
             box_lay.add_widget(lab_author)
             box_lay.add_widget(detail)
-            detail.bind(on_press=self.button_click)
+            book_isbn = book[3]
+            detail.bind(on_press=lambda instance,
+                        book_info=book_isbn: self.send_book_info(instance, book_info))
 
             # Add the boxlayout containing the book information to the container
             container.add_widget(box_lay)
@@ -68,6 +71,8 @@ class UserLib(Screen):
         # Update the label showing the number of books
         self.ids.n_element.text = f"Nombre de livres {len(result)}"
 
-    def button_click(self, instance):
-        """Open the book screen when the button is clicked"""
+    def send_book_info(self, instance, book_info):
+        """Navigate to Book screen and pass book_info"""
+        self.manager.get_screen('Book').display_book(book_info)
         self.manager.current = 'Book'
+
