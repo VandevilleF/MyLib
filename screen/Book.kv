@@ -25,3 +25,39 @@
 			text: 'MyLib'
 			font_size: 18
 			color: 'black'
+	BoxLayout:
+		orientation: 'vertical'
+		size_hint: 1, 0.85
+		pos_hint: {'center_x': 0.5,'center_y': 0.495}
+		canvas.before:
+			Color:
+				rgba: 255, 0, 255, 0.2
+			Rectangle:
+				size: self.size
+				pos: self.pos
+		AsyncImage:
+			id: cover
+			size_hint: None, 1
+			pos_hint: {'center_x': 0.5,'center_y': 0.5}
+		Label:
+			id: title
+			text:'title test'
+			size_hint: 1, 0.5
+		Label:
+			id: author
+			text:'author test'
+			size_hint: 1, 0.5
+		Label:
+			id: editor
+			text:'editor test'
+			size_hint: 1, 0.5
+		Label:
+			id: release_d
+			text:'release test'
+			size_hint: 1, 0.5
+		Button:
+			text: "Supprimer"
+			size_hint: 0.6, 0.2
+			pos_hint: {'center_x': 0.5,'center_y': 0.5}
+			on_press: root.delete_book()
+
