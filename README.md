@@ -29,7 +29,9 @@ Vandeville Florian - [Github](https://github.com/VandevilleF)
 - [x] Login users
 - [x] Log out user
 - [x] User home
-- [x] Display user book list
-- [x] Add book to user list
+- [x] Display user's book list
+- [x] Add book to user's list
+- [x] Delete book to user's list
+- [x] Display more info of book(read status, note)
 
 Work in progress
