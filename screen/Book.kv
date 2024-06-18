@@ -1,0 +1,112 @@
+<Book>:
+	FloatLayout:
+		Image:
+			source: 'images/couverture.png'
+			allow_stretch: True
+			keep_ratio: False
+			size_hint: 1, 1
+		BoxLayout:
+			size_hint: 0.15, 0.08
+			Button:
+				background_normal: 'images/retour.png'
+				on_press: root.manager.current = 'UserLib'
+
+	BoxLayout:
+		orientation: 'vertical'
+		size_hint: 1, 0.92
+		pos_hint: {'center_x': 0.5,'center_y': 0.54}
+		AsyncImage:
+			id: cover
+			contain: True
+		TabbedPanel:
+			do_default_tab: False
+			background_color: [1, 1, 1, 0]
+			tab_pos: 'top_mid'
+			TabbedPanelItem:
+				text: "Livre"
+				background_color: [255, 255, 255, 0.1]
+				BoxLayout:
+					orientation: 'vertical'
+					BoxLayout:
+						orientation: 'horizontal'
+						size_hint: 1, 0.4
+						GridLayout:
+							cols: 3
+							raws: 2
+							Label:
+								text: "Lu"
+							Label:
+								text: "Non lu"
+							Label:
+								text: "En cours"
+							CheckBox:
+								id: check_read
+								on_press: root.checkbox_status(self)
+							CheckBox:
+								id: check_unread
+								on_press: root.checkbox_status(self)
+							CheckBox:
+								id: check_in_progress
+								on_press: root.checkbox_status(self)
+					Label:
+						id: title
+						text:'title test'
+						size_hint: 1, 0.5
+					Label:
+						id: author
+						text:'author test'
+						size_hint: 1, 0.5
+					Label:
+						id: editor
+						text:'editor test'
+						size_hint: 1, 0.5
+					Label:
+						id: release_d
+						text:'release test'
+						size_hint: 1, 0.5
+					Label:
+						id: user_note
+						text: ""
+						size_hint: 1, 0.5
+					Button:
+						text: "Supprimer"
+						size_hint: 0.6, 0.2
+						pos_hint: {'center_x': 0.5,'center_y': 0.5}
+						on_press: root.delete_book()
+			TabbedPanelItem:
+				text: "Notes"
+				background_color: [255, 255, 255, 0.1]
+				BoxLayout:
+					orientation: "vertical"
+					spacing: 10
+					padding: 10
+					Label:
+						text:'Inscriver une note'
+						font_size: 18
+						size_hint: 1, 0.2
+					TextInput:
+						id: new_note
+						text: ""
+						size_hint: 0.8, 0.5
+						pos_hint: {'center_x': 0.5,'center_y': 0.5}
+					BoxLayout:
+						orientation: 'horizontal'
+						size_hint: 0.8, 0.3
+						pos_hint: {'center_x': 0.5,'center_y': 0.5}
+						spacing: 10
+						padding: 10
+						Button:
+							text: "Sauvegarder"
+							size_hint: 1, 0.2
+							pos_hint: {'center_x': 0.5,'center_y': 0.5}
+							on_press: root.save_note()
+						Button:
+							text: "Effacer"
+							size_hint: 1, 0.2
+							pos_hint: {'center_x': 0.5,'center_y': 0.5}
+							on_press: root.delete_note()
+			TabbedPanelItem:
+				text: "Résumé"
+				background_color: [255, 255, 255, 0.1]
+				Label:
+					text:'Emplacement du résumé du livre'

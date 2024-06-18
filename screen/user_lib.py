@@ -3,7 +3,8 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import AsyncImage
 from kivy.uix.label import Label
-from kivy.app import App
+from kivy.uix.button import Button
+from screen.book import Book
 from utils import popup_error, conn_to_ddb, get_user_id_jwt
 
 
@@ -25,7 +26,7 @@ class UserLib(Screen):
         cursor = conn.cursor()
 
         # Fetch the user's books from the DDB
-        query = ("SELECT couverture, title, author FROM Users LEFT JOIN User_books\
+        query = ("SELECT couverture, title, author, ISBN FROM Users LEFT JOIN User_books\
                  ON ID = user_ID LEFT JOIN Books ON ISBN = book_ID WHERE ID = %s")
         value = (user_id,)
         cursor.execute(query, value)
@@ -34,17 +35,32 @@ class UserLib(Screen):
         container = self.ids.container
         container.clear_widgets()
 
+        if all(row == (None, None, None) for row in result):
+            self.ids.n_element.text = "Pas de livre"
+            return
         # Display the books in the user's library
         for book in result:
-            box_lay = BoxLayout(orientation='vertical', size_hint_y=None, spacing=10)
+            box_lay = BoxLayout(orientation='vertical', size_hint_y=None, spacing=5)
             image = AsyncImage(source=book[0], size_hint=(1, None), height=50)
-            lab_info = Label(text=f"{book[1]}\n{book[2]}",
-                             text_size=(container.width, None), font_size=14,
-                             halign='center', valign='middle')
-
+            lab_title = Label(text=f"{book[1]}",
+                              text_size=(container.width, None), font_size=14,
+                              halign='center', valign='middle', shorten=True,
+                              shorten_from='right')
+            lab_author = Label(text=f"{book[2]}",
+                               text_size=(container.width, None), font_size=14,
+                               halign='center', valign='middle', shorten=True,
+                               shorten_from='right')
+            detail = Button(text="Détails", font_size=10, size_hint=(0.5, 1),
+                            pos_hint={'center_x': 0.5, 'center_y': 0.5},
+                            background_color=(0, 0, 0, 0))
             # Add the book information to the boxlayout
             box_lay.add_widget(image)
-            box_lay.add_widget(lab_info)
+            box_lay.add_widget(lab_title)
+            box_lay.add_widget(lab_author)
+            box_lay.add_widget(detail)
+            book_isbn = book[3]
+            detail.bind(on_press=lambda instance,
+                        book_info=book_isbn: self.send_book_info(instance, book_info))
 
             # Add the boxlayout containing the book information to the container
             container.add_widget(box_lay)
@@ -54,4 +70,9 @@ class UserLib(Screen):
 
         # Update the label showing the number of books
         self.ids.n_element.text = f"Nombre de livres {len(result)}"
+
+    def send_book_info(self, instance, book_info):
+        """Navigate to Book screen and pass book_info"""
+        self.manager.get_screen('Book').display_book(book_info)
+        self.manager.current = 'Book'
 
