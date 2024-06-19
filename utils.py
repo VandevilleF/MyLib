@@ -25,6 +25,8 @@ def popup_error(message):
 
 def hash_pwd(password):
     """Hash a password using the sha256 algorithm"""
+    if not password:
+        return
     hash_obj = hashlib.sha256()
     hash_obj.update(password.encode())
     return hash_obj.hexdigest()
