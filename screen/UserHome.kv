@@ -27,10 +27,17 @@
 			Rectangle:
 				size: self.size
 				pos: self.pos
+		Button:
+			text: "Menu"
+			size_hint: 0.3, 1
 		Label:
 			text: 'MyLib'
 			font_size: 18
 			color: 'black'
+		Button:
+			text: "Profil"
+			size_hint: 0.3, 1
+			on_press: root.manager.current = 'UserProfile'
 
 	BoxLayout:
 		orientation:'vertical'
