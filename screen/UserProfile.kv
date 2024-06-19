@@ -1,0 +1,106 @@
+<UserProfile>:
+	FloatLayout:
+		Image:
+			source: 'images/logo.jpg'
+			allow_stretch: True
+			keep_ratio: False
+			size_hint: 1, 1
+		BoxLayout:
+			size_hint: 0.15, 0.08
+			Button:
+				background_normal: 'images/retour.png'
+				on_press: root.manager.current = 'UserHome'
+		BoxLayout:
+			size_hint: 0.28, 0.05
+			pos_hint: {'right': 1,'y': 0}
+
+	BoxLayout:
+		orientation:'horizontal'
+		size_hint: 1, 0.08
+		pos_hint: {'center_x': 0.5,'center_y': 0.96}
+		canvas.before:
+			Color:
+				rgba: 255, 255, 255, 0.2
+			Rectangle:
+				size: self.size
+				pos: self.pos
+		Button:
+			text: "Menu"
+			size_hint: 0.3, 1
+		Label:
+			text: 'MyLib'
+			font_size: 18
+			color: 'black'
+		Button:
+			text: "Profil"
+			size_hint: 0.3, 1
+			on_press: root.manager.current = 'ChangeProfile'
+
+	BoxLayout:
+		orientation:'vertical'
+		size_hint: 0.80, 0.35
+		pos_hint: {'center_x': 0.5,'center_y': 0.5}
+		padding: 10, 20
+		spacing: 10
+		canvas.before:
+			Color:
+				rgba: 255, 255, 255, 0.2
+			RoundedRectangle:
+				size: self.size
+				pos: self.pos
+
+		BoxLayout:
+			orientation: 'vertical'
+			spacing: 10
+			GridLayout:
+				cols: 2
+				spacing: 5
+				size_hint: 1, 0.3
+				Label:
+					text: 'Nom'
+					size_hint_x: 0.8
+				Label:
+					id: nom
+					multiline: False
+				Label:
+					text: 'Mail'
+					size_hint_x: 0.8
+				Label:
+					id: mail
+					multiline: False
+			Widget:
+				size_hint_y: None
+				height: 2
+				canvas:
+					Color:
+						rgba: 1, 1, 1, 1
+					Rectangle:
+						size: self.size
+						pos: self.pos
+			GridLayout:
+				cols: 2
+				spacing: 5
+				Label:
+					text: 'Nombre de livres'
+				Label:
+					id: books_number
+					multiline: False
+					size_hint_x: 0.4
+				Label:
+					text: 'Nombre Lu'
+				Label:
+					id: books_read
+					multiline: False
+					size_hint_x: 0.4
+				Label:
+					text: 'Nombre non lu'
+				Label:
+					id: books_unread
+					multiline: False
+					size_hint_x: 0.4
+				Label:
+					text: 'Pourcentage de lecture'
+				Label:
+					id: percent_read
+					multiline: False
+					size_hint_x: 0.4
