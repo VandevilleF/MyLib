@@ -13,6 +13,8 @@ from screen.add_book_home import AddBookHome
 from screen.add_by_name import AddByName
 from screen.add_by_barcode import AddByBarcode
 from screen.book import Book
+from screen.user_profile import UserProfile
+from screen.change_profile import ChangeProfile
 from utils import conn_to_ddb
 
 
@@ -25,6 +27,8 @@ Builder.load_file("screen/AddBookHome.kv")
 Builder.load_file("screen/AddByName.kv")
 Builder.load_file("screen/AddByBarcode.kv")
 Builder.load_file("screen/Book.kv")
+Builder.load_file("screen/UserProfile.kv")
+Builder.load_file("screen/ChangeProfile.kv")
 
 Window.size = (360, 640)
 
@@ -44,6 +48,8 @@ class MyLibApp(App):
         sm.add_widget(AddByName(name='AddByName'))
         sm.add_widget(AddByBarcode(name='AddByBarcode'))
         sm.add_widget(Book(name='Book'))
+        sm.add_widget(UserProfile(name='UserProfile'))
+        sm.add_widget(ChangeProfile(name='ChangeProfile'))
 
         # Check is a user is logged
         self.check_logged_user(sm)
