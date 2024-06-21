@@ -1,4 +1,7 @@
 <UserHome>:
+	menu_spinner: menu_spinner
+	profile_spinner: profile_spinner
+
 	FloatLayout:
 		Image:
 			source: 'images/logo.jpg'
@@ -27,17 +30,24 @@
 			Rectangle:
 				size: self.size
 				pos: self.pos
-		Button:
-			text: "Menu"
+		Spinner:
+			id: menu_spinner
+			text: 'Menu'
+			values: ['Option 1', 'Option 2', 'Option 3']
 			size_hint: 0.3, 1
+			on_text: app.handle_menu_selection(menu_spinner.text)
+
 		Label:
 			text: 'MyLib'
 			font_size: 18
 			color: 'black'
-		Button:
-			text: "Profil"
+
+		Spinner:
+			id: profile_spinner
+			text: 'Profil'
+			values: ['Mon Profil', 'Modifier', 'Déconnexion']
 			size_hint: 0.3, 1
-			on_press: root.manager.current = 'UserProfile'
+			on_text: app.handle_profile_selection(profile_spinner.text)
 
 	BoxLayout:
 		orientation:'vertical'
