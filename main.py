@@ -16,6 +16,7 @@ from screen.book import Book
 from screen.user_profile import UserProfile
 from screen.change_profile import ChangeProfile
 from utils import conn_to_ddb
+from dropdown_handlers import handle_menu_selection, handle_profile_selection
 
 
 Builder.load_file("screen/HomePage.kv")
@@ -73,6 +74,16 @@ class MyLibApp(App):
 
         cursor.close()
         conn.close()
+
+    def handle_menu_selection(self, text):
+        """Handle the menu selection from the dropdown
+        This function is called when an item from the menu dropdown is selected"""
+        handle_menu_selection(text)
+
+    def handle_profile_selection(self, text):
+        """Handle the profile selection from the dropdown
+        This function is called when an item from the profile dropdown is selected"""
+        handle_profile_selection(text)
 
 
 if __name__ == '__main__':
