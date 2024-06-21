@@ -15,23 +15,11 @@ class UserLib(Screen):
         self.userlib()
 
     def userlib(self):
+        """First display of user's list"""
+        self.sort_by_date_added()
+
+    def display_books(self, result):
         """Display the user's books in their library"""
-        # Retrieve the user ID from the current running instance of the application
-        user_id = get_user_id_jwt()
-
-        if not user_id:
-            popup_error("L'utilisateur n'est pas connecté")
-
-        conn = conn_to_ddb()
-        cursor = conn.cursor()
-
-        # Fetch the user's books from the DDB
-        query = ("SELECT couverture, title, author, ISBN FROM Users LEFT JOIN User_books\
-                 ON ID = user_ID LEFT JOIN Books ON ISBN = book_ID WHERE ID = %s")
-        value = (user_id,)
-        cursor.execute(query, value)
-        result = cursor.fetchall()
-
         container = self.ids.container
         container.clear_widgets()
 
@@ -65,9 +53,6 @@ class UserLib(Screen):
             # Add the boxlayout containing the book information to the container
             container.add_widget(box_lay)
 
-        cursor.close()
-        conn.close()
-
         # Update the label showing the number of books
         self.ids.n_element.text = f"Nombre de livres {len(result)}"
 
@@ -76,3 +61,81 @@ class UserLib(Screen):
         self.manager.get_screen('Book').display_book(book_info)
         self.manager.current = 'Book'
 
+    def sort_book(self, value):
+        """Selected the right sorting method"""
+        if value == "Alphabétique":
+            self.sort_alphabetically()
+
+        elif value == "Auteur":
+            self.sort_by_author()
+
+        elif value == "Date d'ajout":
+            self.sort_by_date_added()
+
+    def sort_alphabetically(self):
+        """Sorts current user list alphabetically"""
+        user_id = get_user_id_jwt()
+
+        if not user_id:
+            popup_error("L'utilisateur n'est pas connecté")
+
+        conn = conn_to_ddb()
+        cursor = conn.cursor()
+
+        # Fetch the user's books from the DDB order alphabetically
+        query = ("SELECT couverture, title, author, ISBN FROM Users LEFT JOIN User_books\
+                 ON ID = user_ID LEFT JOIN Books ON ISBN = book_ID WHERE ID = %s\
+                     ORDER BY title")
+        value = (user_id,)
+        cursor.execute(query, value)
+        result = cursor.fetchall()
+
+        cursor.close()
+        conn.close()
+
+        self.display_books(result)
+
+    def sort_by_author(self):
+        """Sorts current user list by authors"""
+        user_id = get_user_id_jwt()
+
+        if not user_id:
+            popup_error("L'utilisateur n'est pas connecté")
+
+        conn = conn_to_ddb()
+        cursor = conn.cursor()
+
+        # Fetch the user's books from the DDB order by author
+        query = ("SELECT couverture, title, author, ISBN FROM Users LEFT JOIN User_books\
+                 ON ID = user_ID LEFT JOIN Books ON ISBN = book_ID WHERE ID = %s\
+                     ORDER BY author, title")
+        value = (user_id,)
+        cursor.execute(query, value)
+        result = cursor.fetchall()
+
+        cursor.close()
+        conn.close()
+
+        self.display_books(result)
+
+    def sort_by_date_added(self):
+        """Sorts current user list by date added"""
+        user_id = get_user_id_jwt()
+
+        if not user_id:
+            popup_error("L'utilisateur n'est pas connecté")
+
+        conn = conn_to_ddb()
+        cursor = conn.cursor()
+
+        # Fetch the user's books from the DDB order by date added
+        query = ("SELECT couverture, title, author, ISBN FROM Users LEFT JOIN User_books\
+                 ON ID = user_ID LEFT JOIN Books ON ISBN = book_ID WHERE ID = %s")
+        value = (user_id,)
+        cursor.execute(query, value)
+        result = cursor.fetchall()
+
+        cursor.close()
+        conn.close()
+
+        self.display_books(result)

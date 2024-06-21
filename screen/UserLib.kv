@@ -18,6 +18,7 @@
 				valign: 'middle'
 				halign: 'right'
 				padding: 0, 0, 5, 0
+
 	BoxLayout:
 		orientation:'horizontal'
 		size_hint: 1, 0.08
@@ -28,15 +29,33 @@
 			Rectangle:
 				size: self.size
 				pos: self.pos
+		Button:
+			text: "Menu"
+			size_hint: 0.3, 1
 		Label:
 			text: 'MyLib'
 			font_size: 18
 			color: 'black'
+		Button:
+			text: "Profil"
+			size_hint: 0.3, 1
+
+	BoxLayout:
+		orientation: 'horizontal'
+		size_hint: 0.28, 0.05
+		pos_hint: {'center_x': 0.86,'center_y': 0.895}
+		Spinner:
+			id: spinner_id
+			text: 'Trier par...'
+			values: ["Alphabétique", "Auteur", "Date d'ajout"]
+			on_text: root.sort_book(spinner_id.text)
+			option_cls: 'CustomSpinnerOption'
+
 	ScrollView:
 		do_scroll_x: False
 		do_scroll_y: True
-		pos_hint: {'center_x': 0.5,'center_y': 0.5}
-		size_hint_y: 0.84
+		pos_hint: {'center_x': 0.5,'center_y': 0.475}
+		size_hint_y: 0.79
 		GridLayout:
 			id: container
 			cols: 3
@@ -44,3 +63,8 @@
 			height: self.minimum_height
 			spacing: 10
 			padding: 5, 5
+
+<CustomSpinnerOption@SpinnerOption>:
+	background_color: (255, 0, 255, 1)
+	size_hint_y: None
+	height: 30
