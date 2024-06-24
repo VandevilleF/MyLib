@@ -5,8 +5,12 @@ from utils import get_user_id_jwt, conn_to_ddb
 
 def handle_menu_selection(text):
     """Handle the menu selection from the dropdown"""
-    print("Dropdown menu cliqué")
-    pass
+    if text == "Accueil":
+        App.get_running_app().root.current = 'UserHome'
+    elif text == "Bibliothèque":
+        App.get_running_app().root.current = 'UserLib'
+    elif text == "Ajout":
+        App.get_running_app().root.current = 'AddBookHome'
 
 
 def handle_profile_selection(text):
@@ -20,7 +24,6 @@ def handle_profile_selection(text):
     elif text == "Déconnexion":
         print("Déconnexion du profil")
         logout()
-        pass
 
 
 def logout():
@@ -41,3 +44,18 @@ def logout():
 
     # Redirect to login page
     App.get_running_app().root.current = 'LoginPage'
+
+
+def reset_dropdown():
+    """Reset the text of the dropdown spinners to their default values"""
+    screen_names = ["UserHome", "UserLib", "UserProfile", "ChangeProfile",
+                    "AddByName", "AddByBarcode", "AddBookHome"]
+
+    app = App.get_running_app()
+
+    for screen_n in screen_names:
+        screen = app.root.get_screen(screen_n)
+        if 'menu_spinner' in screen.ids:
+            screen.ids.menu_spinner.text = 'Menu'
+        if 'profile_spinner' in screen.ids:
+            screen.ids.profile_spinner.text = 'Profil'
