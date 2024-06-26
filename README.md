@@ -4,6 +4,10 @@ This is the repository for my portfolio project "MyLib", a take-it-anywhere libr
 ## Technologies used:
 ### Frontend:
 * Framework [kivy](https://kivy.org/)
+* [KivyGradient](https://pypi.org/project/KivyGradient/#description)
+```bash
+pip install KivyGradient
+```
 
 ### Backend:
 * Python
