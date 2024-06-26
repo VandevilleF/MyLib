@@ -56,6 +56,6 @@ def reset_dropdown():
     for screen_n in screen_names:
         screen = app.root.get_screen(screen_n)
         if 'menu_spinner' in screen.ids:
-            screen.ids.menu_spinner.text = 'Menu'
+            screen.ids.menu_spinner.text = ''
         if 'profile_spinner' in screen.ids:
-            screen.ids.profile_spinner.text = 'Profil'
+            screen.ids.profile_spinner.text = ''
