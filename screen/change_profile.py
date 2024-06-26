@@ -1,6 +1,11 @@
 #!/usr/bin/python3
 from kivy.uix.screenmanager import Screen
-from utils import get_user_id_jwt, conn_to_ddb, hash_pwd, popup_error, popup_success
+from kivy.uix.popup import Popup
+from kivy.uix.button import Button
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from utils import get_user_id_jwt, conn_to_ddb, hash_pwd
+from utils import popup_error, popup_success
 
 
 class ChangeProfile(Screen):
@@ -157,3 +162,47 @@ class ChangeProfile(Screen):
         self.ids.old_pwd.text = ""
         self.ids.new_pwd.text = ""
         self.ids.confirm.text = ""
+
+    def show_popup(self):
+        "Display a confirm popup"
+        self.popup_confirm("Voulez vous surpprimer le compte ?")
+
+    def popup_confirm(self, message):
+        """Display a confirm popup with a given message"""
+        content = BoxLayout(orientation='vertical')
+        label = Label(text=message, color=(0, 0, 0, 1))
+        content.add_widget(label)
+
+        btn_layout = BoxLayout(orientation='horizontal', size_hint_y=0.5)
+        btn_yes = Button(text="Oui")
+        btn_no = Button(text="Non")
+
+        btn_layout.add_widget(btn_yes)
+        btn_layout.add_widget(btn_no)
+        content.add_widget(btn_layout)
+
+        popup = Popup(title='Attention', title_color=(0, 0, 0, 1), title_align='center',
+                      separator_color=(96/255, 96/255, 96/255, 1), content=content,
+                      size_hint=(0.8, 0.2), background='images/popup.png')
+        popup.open()
+
+        btn_yes.bind(on_release=lambda x: (self.delete_user(), popup.dismiss()))
+        btn_no.bind(on_release=popup.dismiss)
+
+    def delete_user(self):
+        """Delete the current user"""
+        print("utilisateur supprimé")
+        user_id = get_user_id_jwt()
+
+        conn = conn_to_ddb()
+        cursor = conn.cursor()
+
+        cursor.execute("DELETE FROM Users WHERE ID = %s", (user_id,))
+
+        conn.commit()
+
+        popup_success("Compte supprimé")
+        self.manager.current = 'HomePage'
+
+        cursor.close()
+        conn.close()
