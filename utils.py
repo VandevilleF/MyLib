@@ -11,15 +11,17 @@ from datetime import datetime, timedelta
 
 def popup_success(message):
     """Display a success popup with a given message"""
-    popup = Popup(title='Succès', content=Label(text=message),
-                  size_hint=(None, None), size=(350, 100))
+    popup = Popup(title='Succès', title_color=(0, 0, 0, 1), title_align='center',
+                  separator_color=(96/255, 96/255, 96/255, 1), content=Label(text=message, color=(0, 0, 0, 1)),
+                  size_hint=(1, 0.15), background='images/popup.png')
     popup.open()
 
 
 def popup_error(message):
     """Display a error popup with a given message"""
-    popup = Popup(title='Erreur', content=Label(text=message),
-                  size_hint=(None, None), size=(350, 100))
+    popup = Popup(title='Erreur', title_color=(0, 0, 0, 1), title_align='center',
+                  separator_color=(96/255, 96/255, 96/255, 1), content=Label(text=message, color=(0, 0, 0, 1)),
+                  size_hint=(1, 0.15), background='images/popup.png')
     popup.open()
 
 
