@@ -1,3 +1,5 @@
+#:set color_font (0, 0, 0, 1)
+
 <UserLib>:
 	FloatLayout:
 		Image:
@@ -25,31 +27,64 @@
 		pos_hint: {'center_x': 0.5,'center_y': 0.96}
 		canvas.before:
 			Color:
-				rgba: 255, 255, 255, 0.2
+				rgba: 1, 1, 1, 0.4
 			Rectangle:
 				size: self.size
 				pos: self.pos
-		Button:
-			text: "Menu"
-			size_hint: 0.3, 1
+
+		Spinner:
+			id: menu_spinner
+			values: ['Accueil', 'Bibliothèque', 'Ajout']
+			size_hint: 0.55, 1
+			on_text: app.handle_menu_selection(menu_spinner.text)
+			option_cls: 'CustomSpinnerOption'
+
+			background_color: (1, 1, 1, 0)
+			canvas.after:
+				Rectangle:
+					size: self.width / 1.5, self.height / 1.25
+					pos: (self.x, self.center_y - (self.height / 1.25) / 2)
+					source: 'images/menu.png'
+
 		Label:
 			text: 'MyLib'
 			font_size: 18
 			color: 'black'
-		Button:
-			text: "Profil"
-			size_hint: 0.3, 1
+
+		Spinner:
+			id: profile_spinner
+			values: ['Mon Profil', 'Modifier', 'Déconnexion']
+			size_hint: 0.55, 1
+			on_text: app.handle_profile_selection(profile_spinner.text)
+			option_cls: 'CustomSpinnerOption'
+
+			background_color: (1, 1, 1, 0)
+			canvas.before:
+				Rectangle:
+					size: self.width / 1.5, self.height / 1.25
+					pos: (self.right - self.width / 1.5, self.center_y - (self.height / 1.25) / 2)
+					source: 'images/profil.png'
 
 	BoxLayout:
 		orientation: 'horizontal'
 		size_hint: 0.28, 0.05
 		pos_hint: {'center_x': 0.86,'center_y': 0.895}
+
 		Spinner:
 			id: spinner_id
 			text: 'Trier par...'
+			italic: True
+			color: color_font
 			values: ["Alphabétique", "Auteur", "Date d'ajout"]
 			on_text: root.sort_book(spinner_id.text)
 			option_cls: 'CustomSpinnerOption'
+			background_color: (1, 1, 1, 0)
+			canvas.before:
+				Color:
+					rgba: (133/255, 133/255, 133/255, 0.8)
+				Rectangle:
+					size: self.size
+					pos: self.pos
 
 	ScrollView:
 		do_scroll_x: False
@@ -65,6 +100,14 @@
 			padding: 5, 5
 
 <CustomSpinnerOption@SpinnerOption>:
-	background_color: (255, 0, 255, 1)
+	background_color: (1, 1, 1, 0)
+	canvas.before:
+		Color:
+			rgba: (179/255, 179/255, 179/255, 1)
+		Rectangle:
+			size: self.size
+			pos: self.pos
 	size_hint_y: None
 	height: 30
+	color: color_font
+

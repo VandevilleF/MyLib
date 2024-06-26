@@ -1,3 +1,5 @@
+#:set color_font (0, 0, 0, 1)
+
 <UserProfile>:
 	FloatLayout:
 		Image:
@@ -20,16 +22,24 @@
 		pos_hint: {'center_x': 0.5,'center_y': 0.96}
 		canvas.before:
 			Color:
-				rgba: 255, 255, 255, 0.2
+				rgba: 1, 1, 1, 0.4
 			Rectangle:
 				size: self.size
 				pos: self.pos
+
 		Spinner:
 			id: menu_spinner
-			text: 'Menu'
 			values: ['Accueil', 'Bibliothèque', 'Ajout']
-			size_hint: 0.3, 1
+			size_hint: 0.55, 1
 			on_text: app.handle_menu_selection(menu_spinner.text)
+			option_cls: 'CustomSpinnerOption'
+
+			background_color: (1, 1, 1, 0)
+			canvas.after:
+				Rectangle:
+					size: self.width / 1.5, self.height / 1.25
+					pos: (self.x, self.center_y - (self.height / 1.25) / 2)
+					source: 'images/menu.png'
 
 		Label:
 			text: 'MyLib'
@@ -38,10 +48,17 @@
 
 		Spinner:
 			id: profile_spinner
-			text: 'Profil'
 			values: ['Mon Profil', 'Modifier', 'Déconnexion']
-			size_hint: 0.3, 1
+			size_hint: 0.55, 1
 			on_text: app.handle_profile_selection(profile_spinner.text)
+			option_cls: 'CustomSpinnerOption'
+
+			background_color: (1, 1, 1, 0)
+			canvas.before:
+				Rectangle:
+					size: self.width / 1.5, self.height / 1.25
+					pos: (self.right - self.width / 1.5, self.center_y - (self.height / 1.25) / 2)
+					source: 'images/profil.png'
 
 	BoxLayout:
 		orientation:'vertical'
@@ -51,7 +68,7 @@
 		spacing: 10
 		canvas.before:
 			Color:
-				rgba: 255, 255, 255, 0.2
+				rgba: 1, 1, 1, 0.5
 			RoundedRectangle:
 				size: self.size
 				pos: self.pos
@@ -66,15 +83,19 @@
 				Label:
 					text: 'Nom'
 					size_hint_x: 0.8
+					color: color_font
 				Label:
 					id: nom
 					multiline: False
+					color: color_font
 				Label:
 					text: 'Mail'
 					size_hint_x: 0.8
+					color: color_font
 				Label:
 					id: mail
 					multiline: False
+					color: color_font
 			Widget:
 				size_hint_y: None
 				height: 2
@@ -89,25 +110,45 @@
 				spacing: 5
 				Label:
 					text: 'Nombre de livres'
+					color: color_font
 				Label:
 					id: books_number
 					multiline: False
 					size_hint_x: 0.4
+					color: color_font
 				Label:
 					text: 'Nombre Lu'
+					color: color_font
 				Label:
 					id: books_read
 					multiline: False
 					size_hint_x: 0.4
+					color: color_font
 				Label:
 					text: 'Nombre non lu'
+					color: color_font
 				Label:
 					id: books_unread
 					multiline: False
 					size_hint_x: 0.4
+					color: color_font
 				Label:
 					text: 'Pourcentage de lecture'
+					color: color_font
 				Label:
 					id: percent_read
 					multiline: False
 					size_hint_x: 0.4
+					color: color_font
+
+<CustomSpinnerOption@SpinnerOption>:
+	background_color: (1, 1, 1, 0)
+	canvas.before:
+		Color:
+			rgba: (179/255, 179/255, 179/255, 1)
+		Rectangle:
+			size: self.size
+			pos: self.pos
+	size_hint_y: None
+	height: 30
+	color: color_font
