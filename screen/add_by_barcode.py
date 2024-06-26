@@ -2,6 +2,7 @@
 from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
+from kivy.uix.checkbox import CheckBox
 from kivy.uix.label import Label
 from kivy.uix.image import AsyncImage
 from kivy.uix.popup import Popup
@@ -63,6 +64,8 @@ class AddByBarcode(Screen):
 
     def display_book(self, result):
         """Display the search result in a popup"""
+        user_id = get_user_id_jwt()
+
         # Initialize layout of popup
         boxpopup = BoxLayout(orientation='vertical')
         button = Button(text="Fermer", size_hint=(0.8, 0.05),
@@ -74,18 +77,23 @@ class AddByBarcode(Screen):
         lab_info = Label(text=f"{result[1]}\n{result[2]}\n{result[3]} / {result[4]}",
                          text_size=(None, None), font_size=14,
                          halign='center', valign='middle')
-        add_button = Button(size_hint=(0.1, 0.2),
-                            pos_hint={'center_x': 0.5, 'center_y': 0.5})
+
+        # Check if the user already has the book
+        has_book = AddBook.user_owns_book(user_id, result[0])
+
+        checkbox = CheckBox(size_hint=(0.1, 0.2),
+                            pos_hint={'center_x': 0.5, 'center_y': 0.5},
+                            active=has_book, disabled=has_book)
 
         # Lambda expression, an anonymous function,
         # used here for a temporary and simple function
-        add_button.bind(on_press=lambda instance,
-                        book_info=result: AddBook.add_book(get_user_id_jwt(), book_info))
+        checkbox.bind(on_press=lambda instance,
+                      book_info=result: AddBook.add_book(user_id, book_info))
 
         # Add book info to the layout
         box_lay.add_widget(image)
         box_lay.add_widget(lab_info)
-        box_lay.add_widget(add_button)
+        box_lay.add_widget(checkbox)
 
         boxpopup.add_widget(box_lay)
         boxpopup.add_widget(button)
