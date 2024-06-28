@@ -25,8 +25,6 @@ class UserLib(Screen):
         container = self.ids.container
         container.clear_widgets()
 
-        print("Result dans la fonction display book", result)
-
         if all(row == (None, None, None, None) for row in result):
             self.ids.n_element.text = "Pas de livre"
             return
