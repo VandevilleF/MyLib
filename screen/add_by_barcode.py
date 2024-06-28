@@ -10,7 +10,7 @@ from kivy.app import App
 from pyzbar.pyzbar import decode
 from PIL import Image
 from utils import popup_error, conn_to_ddb, get_user_id_jwt
-from book_manager import AddBook
+from book_manager import BookManagement
 
 
 class AddByBarcode(Screen):
@@ -79,7 +79,7 @@ class AddByBarcode(Screen):
                          halign='center', valign='middle')
 
         # Check if the user already has the book
-        has_book = AddBook.user_owns_book(user_id, result[0])
+        has_book = BookManagement.user_owns_book(user_id, result[0])
 
         checkbox = CheckBox(size_hint=(0.1, 0.2),
                             pos_hint={'center_x': 0.5, 'center_y': 0.5},
@@ -87,8 +87,9 @@ class AddByBarcode(Screen):
 
         # Lambda expression, an anonymous function,
         # used here for a temporary and simple function
-        checkbox.bind(on_press=lambda instance,
-                      book_info=result: AddBook.add_book(user_id, book_info))
+        checkbox.bind(active=lambda instance, value,
+                      book_info=result: BookManagement.add_book(user_id, book_info)
+                      if value else BookManagement.delete_book(user_id, book_info))
 
         # Add book info to the layout
         box_lay.add_widget(image)
