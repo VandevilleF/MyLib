@@ -112,7 +112,7 @@ class Book(Screen):
     def save_note(self):
         """Save note for the current user's book"""
         user_id = get_user_id_jwt()
-        new_note = self.ids.new_note.text
+        new_note = f"Note : {self.ids.new_note.text}"
 
         if not new_note:
             return
