@@ -1,5 +1,6 @@
 #:set color_font (0, 0, 0, 1)
-
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+#:import Gradient kivy_gradient.Gradient
 <AddByName>:
 	FloatLayout:
 		Image:
@@ -61,7 +62,7 @@
 		orientation:'vertical'
 		size_hint: 0.70, 0.23
 		pos_hint: {'center_x': 0.5,'center_y': 0.5}
-		padding: 10, 20
+		padding: 10
 		spacing: 10
 		canvas.before:
 			Color:
@@ -74,6 +75,7 @@
 			spacing: 5
 			Label:
 				text: 'Nom du livre'
+				color: color_font
 				size_hint_x: 0.6
 			TextInput:
 				id: book_name
@@ -81,6 +83,7 @@
 				multiline:False
 			Label:
 				text: 'Auteur'
+				color: color_font
 				size_hint_x: 0.6
 			TextInput:
 				id: author_name
@@ -88,9 +91,28 @@
 				multiline:False
 		Button:
 			text: "Recherche"
-			size_hint: 0.6, 0.5
+			size_hint: 0.9, 0.5
+			bold: True
+			outline_color: (0, 0, 0)
+			outline_width: 1
+			background_color: (1, 1, 1, 0)
 			pos_hint: {'center_x': 0.5,'center_y': 0.0}
 			on_press: root.search_book()
+			canvas.before:
+				Color:
+					rgba: 0, 0, 0, 0.5
+				RoundedRectangle:
+					size: (self.width + 4, self.height + 4)
+					pos: (self.x - 2, self.y - 2)
+					radius: (20, 200)
+				Color:
+					rgba: 44/255, 62/255, 80/255, 0.9
+				RoundedRectangle:
+					size: self.size
+					pos: self.pos
+					radius: (20, 200)
+					texture: Gradient.horizontal(get_color_from_hex('#76a9de'), get_color_from_hex('#fafafa'), get_color_from_hex('#76a9de'))
+
 
 <CustomSpinnerOption@SpinnerOption>:
 	background_color: (1, 1, 1, 0)
