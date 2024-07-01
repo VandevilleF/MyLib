@@ -15,7 +15,7 @@ from screen.add_by_barcode import AddByBarcode
 from screen.book import Book
 from screen.user_profile import UserProfile
 from screen.change_profile import ChangeProfile
-from utils import conn_to_ddb
+from utils import conn_to_ddb, decode_jwt
 from dropdown_handlers import handle_menu_selection, handle_profile_selection, reset_dropdown
 
 
@@ -66,11 +66,14 @@ class MyLibApp(App):
         result = cursor.fetchone()
 
         if result and result[0]:
-            self.jwt_token = result[0]
-            sm.current = 'UserHome'
-        else:
-            print("pas de jwt valide")
-            sm.current = 'HomePage'
+            token = result[0]
+            decoded_token = decode_jwt(token)
+            if decoded_token:
+                self.jwt_token = token
+                sm.current = 'UserHome'
+            else:
+                print("pas de jwt valide")
+                sm.current = 'HomePage'
 
         cursor.close()
         conn.close()

@@ -47,7 +47,7 @@ def generate_jwt(user_id):
     """Generate a token on user login"""
     payload = {
         'user_id': user_id,
-        'exp': datetime.now() + timedelta(days=1)
+        'exp': datetime.utcnow() + timedelta(days=1)
     }
     token = jwt.encode(payload, secrete_key, algorithm='HS256')
     return token
@@ -62,7 +62,6 @@ def decode_jwt(token):
         popup_error("Session expiré")
         return None
     except jwt.InvalidTokenError:
-        print("Token invalide")
         return None
 
 
