@@ -77,9 +77,20 @@ class AddByName(Screen):
         for book in result:
             box_lay = BoxLayout(orientation='horizontal', size_hint_y=None, height=100)
             image = AsyncImage(source=book[5], size_hint=(0.2, 1), height=100)
-            lab_info = Label(text=f"{book[1]}\n{book[2]}\n{book[3]} / {book[4]}",
-                             text_size=(None, None), font_size=14,
-                             halign='center', valign='middle')
+            box_lab = BoxLayout(orientation='vertical', spacing=-30)
+            lab_title = Label(text=f"{book[1]}", text_size=(None, None), font_size=14,
+                              halign='center', valign='middle', shorten=True,
+                              shorten_from='right')
+            lab_author = Label(text=f"{book[2]}", text_size=(None, None), font_size=14,
+                               halign='center', valign='middle', shorten=True,
+                               shorten_from='right')
+            lab_info = Label(text=f"{book[3]} / {book[4]}",
+                             text_size=(None, None), font_size=14, halign='center',
+                             valign='middle', shorten=True, shorten_from='right')
+
+            lab_title.bind(width=lambda instance, value: setattr(instance, 'text_size', (value, None)))
+            lab_author.bind(width=lambda instance, value: setattr(instance, 'text_size', (value, None)))
+            lab_info.bind(width=lambda instance, value: setattr(instance, 'text_size', (value, None)))
 
             # Check if the user already has the book
             has_book = BookManagement.user_owns_book(user_id, book[0])
@@ -96,7 +107,10 @@ class AddByName(Screen):
 
             # Add book info to the grid layout
             box_lay.add_widget(image)
-            box_lay.add_widget(lab_info)
+            box_lab.add_widget(lab_title)
+            box_lab.add_widget(lab_author)
+            box_lab.add_widget(lab_info)
+            box_lay.add_widget(box_lab)
             box_lay.add_widget(checkbox)
             grid_lay.add_widget(box_lay)
 

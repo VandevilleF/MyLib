@@ -74,9 +74,20 @@ class AddByBarcode(Screen):
         # Create a layout for each book in the search result
         box_lay = BoxLayout(orientation='horizontal', size_hint_y=None, height=100)
         image = AsyncImage(source=result[5], size_hint=(0.2, 1), height=100)
-        lab_info = Label(text=f"{result[1]}\n{result[2]}\n{result[3]} / {result[4]}",
-                         text_size=(None, None), font_size=14,
-                         halign='center', valign='middle')
+        box_lab = BoxLayout(orientation='vertical', spacing=-30)
+        lab_title = Label(text=f"{result[1]}", text_size=(None, None), font_size=14,
+                          halign='center', valign='middle', shorten=True,
+                          shorten_from='right')
+        lab_author = Label(text=f"{result[2]}", text_size=(None, None), font_size=14,
+                           halign='center', valign='middle', shorten=True,
+                           shorten_from='right')
+        lab_info = Label(text=f"{result[3]} / {result[4]}",
+                         text_size=(None, None), font_size=14, halign='center',
+                         valign='middle', shorten=True, shorten_from='right')
+
+        lab_title.bind(width=lambda instance, value: setattr(instance, 'text_size', (value, None)))
+        lab_author.bind(width=lambda instance, value: setattr(instance, 'text_size', (value, None)))
+        lab_info.bind(width=lambda instance, value: setattr(instance, 'text_size', (value, None)))
 
         # Check if the user already has the book
         has_book = BookManagement.user_owns_book(user_id, result[0])
@@ -93,7 +104,10 @@ class AddByBarcode(Screen):
 
         # Add book info to the layout
         box_lay.add_widget(image)
-        box_lay.add_widget(lab_info)
+        box_lab.add_widget(lab_title)
+        box_lab.add_widget(lab_author)
+        box_lab.add_widget(lab_info)
+        box_lay.add_widget(box_lab)
         box_lay.add_widget(checkbox)
 
         boxpopup.add_widget(box_lay)
