@@ -102,7 +102,7 @@ class AddByName(Screen):
             # Lambda expression, an anonymous function,
             # used here for a temporary and simple function
             checkbox.bind(active=lambda instance, value,
-                          book_info=book: BookManagement.add_book(user_id, book_info)
+                          book_info=book[0]: BookManagement.add_book(user_id, book_info)
                           if value else BookManagement.delete_book(user_id, book_info))
 
             # Add book info to the grid layout
