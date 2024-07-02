@@ -54,7 +54,7 @@ class BookManagement:
         cursor = conn.cursor()
 
         query = "DELETE FROM User_books WHERE user_ID = %s AND book_ID = %s"
-        cursor.execute(query, (user_id, book_info[0]))
+        cursor.execute(query, (user_id, book_info))
 
         conn.commit()
         cursor.close()
