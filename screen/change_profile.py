@@ -4,6 +4,9 @@ from kivy.uix.popup import Popup
 from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
+from kivy.graphics import Color, RoundedRectangle
+from kivy_gradient import Gradient
+from kivy.utils import get_color_from_hex
 from utils import get_user_id_jwt, conn_to_ddb, hash_pwd
 from utils import popup_error, popup_success
 
@@ -174,8 +177,11 @@ class ChangeProfile(Screen):
         content.add_widget(label)
 
         btn_layout = BoxLayout(orientation='horizontal', size_hint_y=0.5)
-        btn_yes = Button(text="Oui")
-        btn_no = Button(text="Non")
+        btn_yes = Button(text="Oui", background_color=(0, 0, 0, 0))
+        btn_no = Button(text="Non", background_color=(0, 0, 0, 0))
+
+        self.add_button_gradient(btn_yes)
+        self.add_button_gradient(btn_no)
 
         btn_layout.add_widget(btn_yes)
         btn_layout.add_widget(btn_no)
@@ -206,3 +212,26 @@ class ChangeProfile(Screen):
 
         cursor.close()
         conn.close()
+
+    def add_button_gradient(self, button):
+        """Draw gradient for the button"""
+        def update_gradient(instance, value):
+            """Update the gradient colors"""
+            button.canvas.before.clear()
+            with button.canvas.before:
+                Color(rgba=(0, 0, 0, 0.5))
+                RoundedRectangle(size=(button.width, button.height),
+                                 pos=button.pos, radius=[10, 200])
+
+                gradient_texture = Gradient.horizontal(get_color_from_hex('#76a9de'),
+                                                       get_color_from_hex('#fafafa'),
+                                                       get_color_from_hex('#76a9de'))
+                Color(rgba=(44/255, 62/255, 80/255, 0.9))
+                RoundedRectangle(size=(button.width - 6, button.height - 6),
+                                 pos=(button.x + 3, button.y + 3), radius=[10, 200],
+                                 texture=gradient_texture)
+
+        # Perform binding (bind) to update the gradient when the button is resized or moved.
+        button.bind(pos=update_gradient, size=update_gradient)
+
+        update_gradient(button, None)
