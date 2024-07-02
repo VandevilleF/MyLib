@@ -14,14 +14,14 @@ class BookManagement:
         cursor.execute("SELECT * FROM User_books WHERE user_ID = %s", (user_id,))
         result = cursor.fetchall()
         for book in result:
-            if book_info[0] == book[1]:
+            if book_info == book[1]:
                 popup_error("Livre déjà enregistré")
                 return
 
         # Insert the new book into the user's library
         query = ("INSERT INTO User_books (user_ID, book_ID, status_ID)\
                 VALUES (%s, %s, 2);")
-        value = (user_id, book_info[0])
+        value = (user_id, book_info)
         cursor.execute(query, value)
         popup_success("Ajout réussi")
 
