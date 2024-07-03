@@ -130,5 +130,21 @@
 			TabbedPanelItem:
 				text: "Résumé"
 				background_color: [255, 255, 255, 0.1]
-				Label:
-					text:'Emplacement du résumé du livre'
+				BoxLayout:
+					padding: 10
+					ScrollView:
+						do_scroll_x: False
+						do_scroll_y: True
+						BoxLayout:
+							orientation: 'vertical'
+							size_hint_y: None
+							height: self.minimum_height
+							spacing: 10
+							padding: 22
+							Label:
+								id: summary
+								text: ''
+								size_hint_y: None
+								height: self.texture_size[1]
+								text_size: self.width, None
+

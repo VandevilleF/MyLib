@@ -26,6 +26,7 @@ class Book(Screen):
             author = result[2]
             editor = result[3]
             release_d = result[4]
+            summary = result[6]
 
         # Retrieve book info
         self.ids.cover.source = cover
@@ -33,6 +34,7 @@ class Book(Screen):
         self.ids.author.text = author
         self.ids.editor.text = editor
         self.ids.release_d.text = release_d
+        self.ids.summary.text = summary
 
         cursor.close()
         conn.close()
