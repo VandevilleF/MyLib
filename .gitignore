@@ -2,3 +2,6 @@
 screen/__pycache__
 *.json
 config.py
+/.buildozer
+/.vscode
+/bin
