@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 from kivy.uix.screenmanager import Screen
 from utils import conn_to_ddb, get_user_id_jwt, popup_success
+from book_manager import BookManagement
 
 
 class Book(Screen):
@@ -25,6 +26,7 @@ class Book(Screen):
             author = result[2]
             editor = result[3]
             release_d = result[4]
+            summary = result[6]
 
         # Retrieve book info
         self.ids.cover.source = cover
@@ -32,25 +34,17 @@ class Book(Screen):
         self.ids.author.text = author
         self.ids.editor.text = editor
         self.ids.release_d.text = release_d
+        self.ids.summary.text = summary
 
         cursor.close()
         conn.close()
 
-    def delete_book(self):
+    def call_delete(self):
         """Delete book to the list of the current user"""
         user_id = get_user_id_jwt()
+        book_info = self.book_info
 
-        conn = conn_to_ddb()
-        cursor = conn.cursor()
-
-        query = "DELETE FROM User_books WHERE user_ID = %s AND book_ID = %s"
-        cursor.execute(query, (user_id, self.book_info))
-
-        conn.commit()
-        cursor.close()
-        conn.close()
-
-        popup_success("Livre supprimé")
+        BookManagement.delete_book(user_id, book_info)
         self.manager.current = 'UserLib'
 
     def load_status(self):
@@ -120,7 +114,7 @@ class Book(Screen):
     def save_note(self):
         """Save note for the current user's book"""
         user_id = get_user_id_jwt()
-        new_note = self.ids.new_note.text
+        new_note = f"Note : {self.ids.new_note.text}"
 
         if not new_note:
             return

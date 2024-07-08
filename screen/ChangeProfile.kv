@@ -1,0 +1,318 @@
+#:set color_font (0, 0, 0, 1)
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+#:import Gradient kivy_gradient.Gradient
+<ChangeProfile>:
+	FloatLayout:
+		Image:
+			source: 'images/logo.jpg'
+			allow_stretch: True
+			keep_ratio: False
+			size_hint: 1, 1
+		BoxLayout:
+			size_hint: 0.15, 0.08
+			Button:
+				background_normal: 'images/retour.png'
+				on_press: root.manager.current = 'UserHome'
+		BoxLayout:
+			size_hint: 0.28, 0.05
+			pos_hint: {'right': 1,'y': 0}
+
+	BoxLayout:
+		orientation:'horizontal'
+		size_hint: 1, 0.08
+		pos_hint: {'center_x': 0.5,'center_y': 0.96}
+		canvas.before:
+			Color:
+				rgba: 1, 1, 1, 0.4
+			Rectangle:
+				size: self.size
+				pos: self.pos
+
+		Spinner:
+			id: menu_spinner
+			values: ['Accueil', 'Bibliothèque', 'Ajout']
+			size_hint: 0.55, 1
+			on_text: app.handle_menu_selection(menu_spinner.text)
+			option_cls: 'CustomSpinnerOption'
+
+			background_color: (1, 1, 1, 0)
+			canvas.after:
+				Rectangle:
+					size: self.width / 1.5, self.height / 1.25
+					pos: (self.x, self.center_y - (self.height / 1.25) / 2)
+					source: 'images/menu.png'
+
+		Label:
+			text: 'MyLib'
+			font_size: 18
+			color: 'black'
+
+		Spinner:
+			id: profile_spinner
+			values: ['Mon Profil', 'Modifier', 'Déconnexion']
+			size_hint: 0.55, 1
+			on_text: app.handle_profile_selection(profile_spinner.text)
+			option_cls: 'CustomSpinnerOption'
+
+			background_color: (1, 1, 1, 0)
+			canvas.before:
+				Rectangle:
+					size: self.width / 1.5, self.height / 1.25
+					pos: (self.right - self.width / 1.5, self.center_y - (self.height / 1.25) / 2)
+					source: 'images/profil.png'
+
+	BoxLayout:
+		orientation:'vertical'
+		pos_hint: {'center_x': 0.5,'center_y': 0.5}
+		size_hint_y: 0.84
+		padding: 10
+		spacing: 10
+
+		Button:
+			text: 'Supprimer le compte'
+			size_hint: 0.5, 0.1
+			bold: True
+			outline_color: (0, 0, 0)
+			outline_width: 1
+			background_color: (1, 1, 1, 0)
+			pos_hint: {'center_x': 0.23,'center_y': 1}
+			on_press: root.show_popup()
+			canvas.before:
+				Color:
+					rgba: 0, 0, 0, 0.5
+				RoundedRectangle:
+					size: (self.width + 4, self.height + 4)
+					pos: (self.x - 2, self.y - 2)
+					radius: (10, 200)
+				Color:
+					rgba: 44/255, 62/255, 80/255, 0.9
+				RoundedRectangle:
+					size: self.size
+					pos: self.pos
+					radius: (10, 200)
+					texture: Gradient.horizontal(get_color_from_hex('#76a9de'), get_color_from_hex('#fafafa'), get_color_from_hex('#76a9de'))
+
+		Image:
+			source: "images/profil.png"
+			size_hint: 0.8, 0.8
+			pos_hint: {'center_x': 0.5,'center_y': 0.5}
+		Label:
+			id: load_username
+			text:""
+			font_size: 32
+			size_hint: 1, 0.2
+		Label:
+			text: "Choisir la ligne à modifier"
+			font_size: 18
+			size_hint: 1, 0.2
+		TabbedPanel:
+			do_default_tab: False
+			background_color: [1, 1, 1, 0]
+			tab_pos: 'top_mid'
+			TabbedPanelItem:
+				text: "Nom"
+				color: color_font
+				background_color: [255, 255, 255, 0.3]
+				BoxLayout:
+					orientation: 'vertical'
+					spacing: 10
+					padding: 10
+					GridLayout:
+						cols: 2
+						spacing: 5
+						Label:
+							text:'Nouveau Nom'
+							color: color_font
+							canvas.before:
+								Color:
+									rgba: 1, 1, 1, 0.3
+								Rectangle:
+									size: self.size
+									pos: self.pos
+						TextInput:
+							id: new_name
+						Label:
+							text:'Mot de passe'
+							color: color_font
+							canvas.before:
+								Color:
+									rgba: 1, 1, 1, 0.3
+								Rectangle:
+									size: self.size
+									pos: self.pos
+						TextInput:
+							id: pwd
+							multiline: False
+							password: True
+						Label:
+							text: ""
+					Button:
+						text:"Valider"
+						size_hint: 0.8, 0.3
+						bold: True
+						outline_color: (0, 0, 0)
+						outline_width: 1
+						background_color: (1, 1, 1, 0)
+						pos_hint: {'center_x': 0.5,'center_y': 0.5}
+						on_press: root.change_username()
+						canvas.before:
+							Color:
+								rgba: 0, 0, 0, 0.5
+							RoundedRectangle:
+								size: (self.width + 4, self.height + 4)
+								pos: (self.x - 2, self.y - 2)
+								radius: (15, 200)
+							Color:
+								rgba: 44/255, 62/255, 80/255, 0.9
+							RoundedRectangle:
+								size: self.size
+								pos: self.pos
+								radius: (15, 200)
+								texture: Gradient.horizontal(get_color_from_hex('#76a9de'), get_color_from_hex('#fafafa'), get_color_from_hex('#76a9de'))
+
+
+			TabbedPanelItem:
+				text: "Mail"
+				color: color_font
+				background_color: [255, 255, 255, 0.3]
+				BoxLayout:
+					orientation: 'vertical'
+					spacing: 10
+					padding: 10
+					GridLayout:
+						cols: 2
+						spacing: 5
+						Label:
+							text:'Nouveau Mail'
+							color: color_font
+							canvas.before:
+								Color:
+									rgba: 1, 1, 1, 0.3
+								Rectangle:
+									size: self.size
+									pos: self.pos
+						TextInput:
+							id: new_mail
+						Label:
+							text:'Mot de passe'
+							color: color_font
+							canvas.before:
+								Color:
+									rgba: 1, 1, 1, 0.3
+								Rectangle:
+									size: self.size
+									pos: self.pos
+						TextInput:
+							id: pwd_mail
+							multiline: False
+							password: True
+						Label:
+							text: ""
+					Button:
+						text:"Valider"
+						size_hint: 0.8, 0.3
+						bold: True
+						outline_color: (0, 0, 0)
+						outline_width: 1
+						background_color: (1, 1, 1, 0)
+						pos_hint: {'center_x': 0.5,'center_y': 0.5}
+						on_press: root.change_mail()
+						canvas.before:
+							Color:
+								rgba: 0, 0, 0, 0.5
+							RoundedRectangle:
+								size: (self.width + 4, self.height + 4)
+								pos: (self.x - 2, self.y - 2)
+								radius: (15, 200)
+							Color:
+								rgba: 44/255, 62/255, 80/255, 0.9
+							RoundedRectangle:
+								size: self.size
+								pos: self.pos
+								radius: (15, 200)
+								texture: Gradient.horizontal(get_color_from_hex('#76a9de'), get_color_from_hex('#fafafa'), get_color_from_hex('#76a9de'))
+
+			TabbedPanelItem:
+				text: "Mot de passe"
+				color: color_font
+				background_color: [255, 255, 255, 0.3]
+				BoxLayout:
+					orientation: 'vertical'
+					spacing: 10
+					padding: 10
+					GridLayout:
+						cols: 2
+						spacing: 5
+						Label:
+							text:'Ancien mot de passe'
+							color: color_font
+							canvas.before:
+								Color:
+									rgba: 1, 1, 1, 0.3
+								Rectangle:
+									size: self.size
+									pos: self.pos
+						TextInput:
+							id: old_pwd
+							multiline: False
+							password: True
+						Label:
+							text:'Nouveau mot de passe'
+							color: color_font
+							canvas.before:
+								Color:
+									rgba: 1, 1, 1, 0.3
+								Rectangle:
+									size: self.size
+									pos: self.pos
+						TextInput:
+							id: new_pwd
+							multiline: False
+							password: True
+						Label:
+							text:'Confirmation'
+							color: color_font
+							canvas.before:
+								Color:
+									rgba: 1, 1, 1, 0.3
+								Rectangle:
+									size: self.size
+									pos: self.pos
+						TextInput:
+							id: confirm
+							multiline: False
+							password: True
+					Button:
+						text:"Valider"
+						size_hint: 0.8, 0.3
+						outline_color: (0, 0, 0)
+						outline_width: 1
+						background_color: (1, 1, 1, 0)
+						pos_hint: {'center_x': 0.5,'center_y': 0.5}
+						on_press: root.change_pwd()
+						canvas.before:
+							Color:
+								rgba: 0, 0, 0, 0.5
+							RoundedRectangle:
+								size: (self.width + 4, self.height + 4)
+								pos: (self.x - 2, self.y - 2)
+								radius: (15, 200)
+							Color:
+								rgba: 44/255, 62/255, 80/255, 0.9
+							RoundedRectangle:
+								size: self.size
+								pos: self.pos
+								radius: (15, 200)
+								texture: Gradient.horizontal(get_color_from_hex('#76a9de'), get_color_from_hex('#fafafa'), get_color_from_hex('#76a9de'))
+
+<CustomSpinnerOption@SpinnerOption>:
+	background_color: (1, 1, 1, 0)
+	canvas.before:
+		Color:
+			rgba: (179/255, 179/255, 179/255, 1)
+		Rectangle:
+			size: self.size
+			pos: self.pos
+	size_hint_y: None
+	height: 30
+	color: color_font

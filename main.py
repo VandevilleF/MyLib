@@ -13,7 +13,10 @@ from screen.add_book_home import AddBookHome
 from screen.add_by_name import AddByName
 from screen.add_by_barcode import AddByBarcode
 from screen.book import Book
-from utils import conn_to_ddb
+from screen.user_profile import UserProfile
+from screen.change_profile import ChangeProfile
+from utils import conn_to_ddb, decode_jwt
+from dropdown_handlers import handle_menu_selection, handle_profile_selection, reset_dropdown
 
 
 Builder.load_file("screen/HomePage.kv")
@@ -25,6 +28,8 @@ Builder.load_file("screen/AddBookHome.kv")
 Builder.load_file("screen/AddByName.kv")
 Builder.load_file("screen/AddByBarcode.kv")
 Builder.load_file("screen/Book.kv")
+Builder.load_file("screen/UserProfile.kv")
+Builder.load_file("screen/ChangeProfile.kv")
 
 Window.size = (360, 640)
 
@@ -44,6 +49,8 @@ class MyLibApp(App):
         sm.add_widget(AddByName(name='AddByName'))
         sm.add_widget(AddByBarcode(name='AddByBarcode'))
         sm.add_widget(Book(name='Book'))
+        sm.add_widget(UserProfile(name='UserProfile'))
+        sm.add_widget(ChangeProfile(name='ChangeProfile'))
 
         # Check is a user is logged
         self.check_logged_user(sm)
@@ -59,14 +66,29 @@ class MyLibApp(App):
         result = cursor.fetchone()
 
         if result and result[0]:
-            self.jwt_token = result[0]
-            sm.current = 'UserHome'
-        else:
-            print("pas de jwt valide")
-            sm.current = 'HomePage'
+            token = result[0]
+            decoded_token = decode_jwt(token)
+            if decoded_token:
+                self.jwt_token = token
+                sm.current = 'UserHome'
+            else:
+                print("pas de jwt valide")
+                sm.current = 'HomePage'
 
         cursor.close()
         conn.close()
+
+    def handle_menu_selection(self, text):
+        """Handle the menu selection from the dropdown
+        This function is called when an item from the menu dropdown is selected"""
+        handle_menu_selection(text)
+        reset_dropdown()
+
+    def handle_profile_selection(self, text):
+        """Handle the profile selection from the dropdown
+        This function is called when an item from the profile dropdown is selected"""
+        handle_profile_selection(text)
+        reset_dropdown()
 
 
 if __name__ == '__main__':

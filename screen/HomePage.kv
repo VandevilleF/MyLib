@@ -1,3 +1,6 @@
+#:set color_font (0, 0, 0, 1)
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+#:import Gradient kivy_gradient.Gradient
 <HomePage>:
 
 	FloatLayout:
@@ -24,21 +27,59 @@
 
 	BoxLayout:
 		orientation:'vertical'
-		size_hint: 0.40, 0.2
+		size_hint: 0.65, 0.3
 		pos_hint: {'center_x': 0.5,'center_y': 0.5}
 		padding: 10, 20
 		spacing: 20
 		canvas.before:
 			Color:
-				rgba: 255, 255, 255, 0.2
+				rgba: 255, 255, 255, 0.3
 			RoundedRectangle:
 				size: self.size
 				pos: self.pos
 		Button:
 			text: 'Connexion'
 			size_hint: 1, 0.6
+			bold: True
+			outline_color: (0, 0, 0)
+			outline_width: 1
+			background_color: (1, 1, 1, 0)
 			on_press: root.manager.current = 'LoginPage'
+			canvas.before:
+				Color:
+					rgba: 0, 0, 0, 0.5
+				RoundedRectangle:
+					size: (self.width + 4, self.height + 4)
+					pos: (self.x - 2, self.y - 2)
+					radius: (30, 200)
+				Color:
+					rgba: 44/255, 62/255, 80/255, 0.9
+				RoundedRectangle:
+					size: self.size
+					pos: self.pos
+					radius: (30, 200)
+					texture: Gradient.horizontal(get_color_from_hex('#76a9de'), get_color_from_hex('#fafafa'), get_color_from_hex('#76a9de'))
+
 		Button:
 			text: 'Créer un compte'
 			size_hint: 1, 0.6
+			bold: True
+			outline_color: (0, 0, 0)
+			outline_width: 1
+			background_color: (1, 1, 1, 0)
 			on_press: root.manager.current = 'CreateAccompte'
+			canvas.before:
+				Color:
+					rgba: 0, 0, 0, 0.5
+				RoundedRectangle:
+					size: (self.width + 4, self.height + 4)
+					pos: (self.x - 2, self.y - 2)
+					radius: (30, 200)
+				Color:
+					rgba: 44/255, 62/255, 80/255, 0.9
+				RoundedRectangle:
+					size: self.size
+					pos: self.pos
+					radius: (30, 200)
+					texture: Gradient.horizontal(get_color_from_hex('#76a9de'), get_color_from_hex('#fafafa'), get_color_from_hex('#76a9de'))
+

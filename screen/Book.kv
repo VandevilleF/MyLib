@@ -1,3 +1,6 @@
+#:set color_font (0, 0, 0, 1)
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+#:import Gradient kivy_gradient.Gradient
 <Book>:
 	FloatLayout:
 		Image:
@@ -70,9 +73,28 @@
 						size_hint: 1, 0.5
 					Button:
 						text: "Supprimer"
-						size_hint: 0.6, 0.2
+						size_hint: 0.8, 0.3
+						bold: True
+						outline_color: (0, 0, 0)
+						outline_width: 1
+						background_color: (1, 1, 1, 0)
 						pos_hint: {'center_x': 0.5,'center_y': 0.5}
-						on_press: root.delete_book()
+						on_press: root.call_delete()
+						canvas.before:
+							Color:
+								rgba: 0, 0, 0, 0.5
+							RoundedRectangle:
+								size: (self.width + 4, self.height + 4)
+								pos: (self.x - 2, self.y - 2)
+								radius: (10, 200)
+							Color:
+								rgba: 44/255, 62/255, 80/255, 0.9
+							RoundedRectangle:
+								size: self.size
+								pos: self.pos
+								radius: (10, 200)
+								texture: Gradient.horizontal(get_color_from_hex('#76a9de'), get_color_from_hex('#fafafa'), get_color_from_hex('#76a9de'))
+
 			TabbedPanelItem:
 				text: "Notes"
 				background_color: [255, 255, 255, 0.1]
@@ -108,5 +130,21 @@
 			TabbedPanelItem:
 				text: "Résumé"
 				background_color: [255, 255, 255, 0.1]
-				Label:
-					text:'Emplacement du résumé du livre'
+				BoxLayout:
+					padding: 10
+					ScrollView:
+						do_scroll_x: False
+						do_scroll_y: True
+						BoxLayout:
+							orientation: 'vertical'
+							size_hint_y: None
+							height: self.minimum_height
+							spacing: 10
+							padding: 22
+							Label:
+								id: summary
+								text: ''
+								size_hint_y: None
+								height: self.texture_size[1]
+								text_size: self.width, None
+

@@ -1,0 +1,154 @@
+#:set color_font (0, 0, 0, 1)
+
+<UserProfile>:
+	FloatLayout:
+		Image:
+			source: 'images/logo.jpg'
+			allow_stretch: True
+			keep_ratio: False
+			size_hint: 1, 1
+		BoxLayout:
+			size_hint: 0.15, 0.08
+			Button:
+				background_normal: 'images/retour.png'
+				on_press: root.manager.current = 'UserHome'
+		BoxLayout:
+			size_hint: 0.28, 0.05
+			pos_hint: {'right': 1,'y': 0}
+
+	BoxLayout:
+		orientation:'horizontal'
+		size_hint: 1, 0.08
+		pos_hint: {'center_x': 0.5,'center_y': 0.96}
+		canvas.before:
+			Color:
+				rgba: 1, 1, 1, 0.4
+			Rectangle:
+				size: self.size
+				pos: self.pos
+
+		Spinner:
+			id: menu_spinner
+			values: ['Accueil', 'Bibliothèque', 'Ajout']
+			size_hint: 0.55, 1
+			on_text: app.handle_menu_selection(menu_spinner.text)
+			option_cls: 'CustomSpinnerOption'
+
+			background_color: (1, 1, 1, 0)
+			canvas.after:
+				Rectangle:
+					size: self.width / 1.5, self.height / 1.25
+					pos: (self.x, self.center_y - (self.height / 1.25) / 2)
+					source: 'images/menu.png'
+
+		Label:
+			text: 'MyLib'
+			font_size: 18
+			color: 'black'
+
+		Spinner:
+			id: profile_spinner
+			values: ['Mon Profil', 'Modifier', 'Déconnexion']
+			size_hint: 0.55, 1
+			on_text: app.handle_profile_selection(profile_spinner.text)
+			option_cls: 'CustomSpinnerOption'
+
+			background_color: (1, 1, 1, 0)
+			canvas.before:
+				Rectangle:
+					size: self.width / 1.5, self.height / 1.25
+					pos: (self.right - self.width / 1.5, self.center_y - (self.height / 1.25) / 2)
+					source: 'images/profil.png'
+
+	BoxLayout:
+		orientation:'vertical'
+		size_hint: 0.80, 0.35
+		pos_hint: {'center_x': 0.5,'center_y': 0.5}
+		padding: 10, 20
+		spacing: 10
+		canvas.before:
+			Color:
+				rgba: 1, 1, 1, 0.5
+			RoundedRectangle:
+				size: self.size
+				pos: self.pos
+
+		BoxLayout:
+			orientation: 'vertical'
+			spacing: 10
+			GridLayout:
+				cols: 2
+				spacing: 5
+				size_hint: 1, 0.3
+				Label:
+					text: 'Nom'
+					size_hint_x: 0.8
+					color: color_font
+				Label:
+					id: nom
+					multiline: False
+					color: color_font
+				Label:
+					text: 'Mail'
+					size_hint_x: 0.8
+					color: color_font
+				Label:
+					id: mail
+					multiline: False
+					color: color_font
+			Widget:
+				size_hint_y: None
+				height: 2
+				canvas:
+					Color:
+						rgba: 1, 1, 1, 1
+					Rectangle:
+						size: self.size
+						pos: self.pos
+			GridLayout:
+				cols: 2
+				spacing: 5
+				Label:
+					text: 'Nombre de livres'
+					color: color_font
+				Label:
+					id: books_number
+					multiline: False
+					size_hint_x: 0.4
+					color: color_font
+				Label:
+					text: 'Nombre Lu'
+					color: color_font
+				Label:
+					id: books_read
+					multiline: False
+					size_hint_x: 0.4
+					color: color_font
+				Label:
+					text: 'Nombre non lu'
+					color: color_font
+				Label:
+					id: books_unread
+					multiline: False
+					size_hint_x: 0.4
+					color: color_font
+				Label:
+					text: 'Pourcentage de lecture'
+					color: color_font
+				Label:
+					id: percent_read
+					multiline: False
+					size_hint_x: 0.4
+					color: color_font
+
+<CustomSpinnerOption@SpinnerOption>:
+	background_color: (1, 1, 1, 0)
+	canvas.before:
+		Color:
+			rgba: (179/255, 179/255, 179/255, 1)
+		Rectangle:
+			size: self.size
+			pos: self.pos
+	size_hint_y: None
+	height: 30
+	color: color_font

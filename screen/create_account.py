@@ -20,6 +20,10 @@ class CreateAccount(Screen):
             popup_error("La confirmation est différente du mot de passe")
             return
 
+        if password == hash_pwd(username):
+            popup_error("Le mot de passe et le nom doivent être différents")
+            return
+
         conn = conn_to_ddb()
         cursor = conn.cursor()
 

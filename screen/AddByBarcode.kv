@@ -1,3 +1,6 @@
+#:set color_font (0, 0, 0, 1)
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+#:import Gradient kivy_gradient.Gradient
 <AddByBarcode>:
 	FloatLayout:
 		Image:
@@ -17,20 +20,49 @@
 		pos_hint: {'center_x': 0.5,'center_y': 0.96}
 		canvas.before:
 			Color:
-				rgba: 255, 255, 255, 0.2
+				rgba: 1, 1, 1, 0.4
 			Rectangle:
 				size: self.size
 				pos: self.pos
+
+		Spinner:
+			id: menu_spinner
+			values: ['Accueil', 'Bibliothèque', 'Ajout']
+			size_hint: 0.55, 1
+			on_text: app.handle_menu_selection(menu_spinner.text)
+			option_cls: 'CustomSpinnerOption'
+
+			background_color: (1, 1, 1, 0)
+			canvas.after:
+				Rectangle:
+					size: self.width / 1.5, self.height / 1.25
+					pos: (self.x, self.center_y - (self.height / 1.25) / 2)
+					source: 'images/menu.png'
+
 		Label:
 			text: 'MyLib'
 			font_size: 18
 			color: 'black'
 
+		Spinner:
+			id: profile_spinner
+			values: ['Mon Profil', 'Modifier', 'Déconnexion']
+			size_hint: 0.55, 1
+			on_text: app.handle_profile_selection(profile_spinner.text)
+			option_cls: 'CustomSpinnerOption'
+
+			background_color: (1, 1, 1, 0)
+			canvas.before:
+				Rectangle:
+					size: self.width / 1.5, self.height / 1.25
+					pos: (self.right - self.width / 1.5, self.center_y - (self.height / 1.25) / 2)
+					source: 'images/profil.png'
+
 	BoxLayout:
 		orientation:'vertical'
 		size_hint: 0.70, 0.50
 		pos_hint: {'center_x': 0.5,'center_y': 0.5}
-		padding: 10, 20
+		padding: 10
 		spacing: 10
 		canvas.before:
 			Color:
@@ -41,21 +73,59 @@
 		GridLayout:
 			cols: 1
 			spacing: 5
+			Label:
+				text:'Code ISBN'
+				color: color_font
+				size_hint: 1, 0.2
 			TextInput:
 				id: isbn_book
-				text:'Code ISBN'
 				multiline:False
+				size_hint: 1, 0.25
 			Label:
 				text: 'Scanne'
-				size_hint_x: 0.6
-			Button:
+				color: color_font
+				size_hint: 1, 0.2
+			Label:
 				text: "Attente caméra"
+				color: color_font
+				font_size: 22
 			# Camera:
 			# 	id: camera
 			# 	resolution: (320, 240)
 			# 	play: True
 		Button:
 			text: "Recherche"
-			size_hint: 0.6, 0.2
+			size_hint: 0.9, 0.2
+			bold: True
+			outline_color: (0, 0, 0)
+			outline_width: 1
+			background_color: (1, 1, 1, 0)
 			pos_hint: {'center_x': 0.5,'center_y': 0.0}
 			on_press: root.search_book_by_isbn()
+			canvas.before:
+				Color:
+					rgba: 0, 0, 0, 0.5
+				RoundedRectangle:
+					size: (self.width + 4, self.height + 4)
+					pos: (self.x - 2, self.y - 2)
+					radius: (20, 200)
+				Color:
+					rgba: 44/255, 62/255, 80/255, 0.9
+				RoundedRectangle:
+					size: self.size
+					pos: self.pos
+					radius: (20, 200)
+					texture: Gradient.horizontal(get_color_from_hex('#76a9de'), get_color_from_hex('#fafafa'), get_color_from_hex('#76a9de'))
+
+
+<CustomSpinnerOption@SpinnerOption>:
+	background_color: (1, 1, 1, 0)
+	canvas.before:
+		Color:
+			rgba: (179/255, 179/255, 179/255, 1)
+		Rectangle:
+			size: self.size
+			pos: self.pos
+	size_hint_y: None
+	height: 30
+	color: color_font

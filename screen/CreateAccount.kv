@@ -1,5 +1,7 @@
+#:set color_font (0, 0, 0, 1)
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+#:import Gradient kivy_gradient.Gradient
 <CreateAccount>:
-
 	FloatLayout:
 		Image:
 			source: 'images/logo.jpg'
@@ -31,11 +33,11 @@
 		orientation:'vertical'
 		size_hint: 0.70, 0.35
 		pos_hint: {'center_x': 0.5,'center_y': 0.5}
-		padding: 10, 20
+		padding: 10, 10
 		spacing: 10
 		canvas.before:
 			Color:
-				rgba: 255, 255, 255, 0.2
+				rgba: 255, 255, 255, 0.3
 			RoundedRectangle:
 				size: self.size
 				pos: self.pos
@@ -46,18 +48,21 @@
 			Label:
 				text: 'Nom'
 				size_hint_x: 0.6
+				color: color_font
 			TextInput:
 				id: nom
 				multiline:False
 			Label:
 				text: 'Mail'
 				size_hint_x: 0.6
+				color: color_font
 			TextInput:
 				id: mail
 				multiline:False
 			Label:
 				text: 'Mot de passe'
 				size_hint_x: 0.6
+				color: color_font
 			TextInput:
 				id: mdp
 				multiline: False
@@ -65,12 +70,32 @@
 			Label:
 				text: 'Confirmation'
 				size_hint_x: 0.6
+				color: color_font
 			TextInput:
 				id: confir_mdp
 				multiline:False
 				password: True
 		Button:
 			text: "Valider"
-			size_hint: 0.6, 0.25
+			size_hint: 0.9, 0.3
 			pos_hint: {'center_x': 0.5,'center_y': 0.0}
+			bold: True
+			outline_color: (0, 0, 0)
+			outline_width: 1
+			background_color: (1, 1, 1, 0)
 			on_press: root.register_user()
+			canvas.before:
+				Color:
+					rgba: 0, 0, 0, 0.5
+				RoundedRectangle:
+					size: (self.width + 4, self.height + 4)
+					pos: (self.x - 2, self.y - 2)
+					radius: (20, 200)
+				Color:
+					rgba: 44/255, 62/255, 80/255, 0.9
+				RoundedRectangle:
+					size: self.size
+					pos: self.pos
+					radius: (20, 200)
+					texture: Gradient.horizontal(get_color_from_hex('#76a9de'), get_color_from_hex('#fafafa'), get_color_from_hex('#76a9de'))
+

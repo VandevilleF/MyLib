@@ -8,8 +8,8 @@ import json
 def get_all_pages():
     """"""
     urls = []
-    page_number = 203
-    for i in range(407):
+    page_number = 1
+    for i in range(1):
         i = f'https://www.placedeslibraires.fr/listeliv.php?rayon=Policier+%26+Thriller%7CThriller&select_tri_recherche=dateparution_decroissant&base=allbooks&codegtl1=90000000&codegtl2=90020000&page={page_number}'
         page_number += 1
         urls.append(i)
@@ -50,6 +50,18 @@ def parse_books(url):
             couverture_livre = img_livre['data-src']
         except TypeError as e:
             couverture_livre = ""
+        try:
+            # Trouver l'élément du résumé
+            resume_element = livre.find('p', class_='livre_resume mb-02 hidden-xs')
+            # Supprimer tous les éléments de bouton à l'intérieur du résumé
+            if resume_element:
+                for button in resume_element.find_all('button'):
+                    button.decompose()
+                resume_livre = resume_element.text.strip()
+            else:
+                resume_livre = "Pas de résumé pour le moment"
+        except AttributeError as e:
+            resume_livre = "Pas de résumé pour le moment"
 
         dict_livres = {
             'Titre': titre_livre,
@@ -57,7 +69,8 @@ def parse_books(url):
             'Editeur': editeur_livre,
             'Date de sortie': sortie_livre,
             'ISBN': ISBN_livre,
-            'Couverture': couverture_livre
+            'Couverture': couverture_livre,
+            'Résumé': resume_livre
         }
         json_data.append(dict_livres)
 
