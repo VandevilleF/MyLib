@@ -19,6 +19,7 @@ class AddByBarcode(Screen):
         """Search for a book by ISBN"""
         # Retrieve info from input fields
         text_isbn = self.ids.isbn_book.text
+        user_id = get_user_id_jwt()
 
         # Check for ISBN in the DDB
         if text_isbn:
@@ -28,11 +29,16 @@ class AddByBarcode(Screen):
 
     def search_isbn(self, text_isbn):
         """Search by a given ISBN """
+        user_id = get_user_id_jwt()
         conn = conn_to_ddb()
         cursor = conn.cursor()
 
-        # Check if ISBN exits in the DDB
-        cursor.execute("SELECT * FROM Books WHERE ISBN = %s", (text_isbn,))
+        # Check if ISBN exits in the DB
+        query = "SELECT ISBN, title, author, editor, release_date, couverture, user_ID\
+                FROM Books LEFT JOIN User_books ON book_ID = ISBN AND User_ID = %s\
+                    WHERE ISBN = %s"
+        value = (user_id, text_isbn)
+        cursor.execute(query, value)
         result = cursor.fetchone()
         # If no book found
         if not result:
@@ -59,8 +65,8 @@ class AddByBarcode(Screen):
             isbn = obj.data.decode('utf-8')
             print("ISBN Scanné :", isbn)
 
-        # Display the search result
-        self.display_book(isbn)
+        # Search for ISBN in db
+        self.search_isbn(isbn)
 
     def display_book(self, result):
         """Display the search result in a popup"""
@@ -90,11 +96,11 @@ class AddByBarcode(Screen):
         lab_info.bind(width=lambda instance, value: setattr(instance, 'text_size', (value, None)))
 
         # Check if the user already has the book
-        has_book = BookManagement.user_owns_book(user_id, result[0])
+        has_book = user_id == result[6]
 
         checkbox = CheckBox(size_hint=(0.1, 0.2),
                             pos_hint={'center_x': 0.5, 'center_y': 0.5},
-                            active=has_book, disabled=has_book)
+                            active=has_book)
 
         # Lambda expression, an anonymous function,
         # used here for a temporary and simple function

@@ -30,22 +30,6 @@ class BookManagement:
         cursor.close()
         conn.close()
 
-    @staticmethod
-    def user_owns_book(user_id, book_id):
-        """Check if the user already has the book in their library"""
-        conn = conn_to_ddb()
-        cursor = conn.cursor()
-
-        query = "SELECT * FROM User_books WHERE user_ID = %s AND book_ID = %s"
-        value = (user_id, book_id)
-        cursor.execute(query, value)
-        result = cursor.fetchone()
-        print("Result dans la classe addbook", result)
-
-        cursor.close()
-        conn.close()
-
-        return result is not None
 
     @staticmethod
     def delete_book(user_id, book_info):
