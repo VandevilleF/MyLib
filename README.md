@@ -1,5 +1,7 @@
 # MyLib
-This is the repository for my portfolio project "MyLib", a take-it-anywhere library manager.
+"MyLib", a take-it-anywhere library manager.This is my end-if-years project at [Holberton School](https://www.holbertonschool.fr/)
+
+![MyLib](img_readme/lib.png)
 
 ## Technologies used:
 ### Frontend:
@@ -22,6 +24,10 @@ pip install pyzbar
 pip install Pillow
 ```
 
+## Download the app
+[APK](APK/mylib-0.1-arm64-v8a_armeabi-v7a-debug.apk)
+
+Read the documentation to install the app [here](APK/README.md)
 ## Authors
 Vandeville Florian - [Github](https://github.com/VandevilleF)
 
@@ -37,5 +43,7 @@ Vandeville Florian - [Github](https://github.com/VandevilleF)
 - [x] Add book to user's list
 - [x] Delete book to user's list
 - [x] Display more info of book(read status, note)
+- [x] Update user account
+- [x] Delete user account
 
 Work in progress
