@@ -20,6 +20,7 @@ class AddByName(Screen):
         # Retrieve info from the input fields
         book_name = self.ids.book_name.text
         author_name = self.ids.author_name.text
+        user_id = get_user_id_jwt()
 
         # Check if fields are filled in
         if not book_name and not author_name:
@@ -36,8 +37,10 @@ class AddByName(Screen):
 
         # Search by name
         if book_name:
-            query = "SELECT * FROM Books WHERE title LIKE %s"
-            value = ('%' + book_name + '%',)
+            query = "SELECT ISBN, title, author, editor, release_date, couverture, user_ID\
+                FROM Books LEFT JOIN User_books ON book_ID = ISBN AND User_ID = %s\
+                    WHERE title LIKE %s"
+            value = (user_id, '%' + book_name + '%',)
             cursor.execute(query, value)
             result = cursor.fetchall()
 
@@ -47,8 +50,10 @@ class AddByName(Screen):
 
         # Search by author
         if author_name:
-            query = "SELECT * FROM Books WHERE author LIKE %s"
-            value = ('%' + author_name + '%',)
+            query = "SELECT ISBN, title, author, editor, release_date, couverture, user_ID\
+                FROM Books LEFT JOIN User_books ON book_ID = ISBN AND User_ID = %s\
+                    WHERE title LIKE %s"
+            value = (user_id, '%' + author_name + '%',)
             cursor.execute(query, value)
             result = cursor.fetchall()
 
@@ -93,7 +98,7 @@ class AddByName(Screen):
             lab_info.bind(width=lambda instance, value: setattr(instance, 'text_size', (value, None)))
 
             # Check if the user already has the book
-            has_book = BookManagement.user_owns_book(user_id, book[0])
+            has_book = user_id == book[6]
 
             checkbox = CheckBox(size_hint=(0.1, 0.2),
                                 pos_hint={'center_x': 0.5, 'center_y': 0.5},
